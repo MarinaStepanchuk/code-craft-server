@@ -1,5 +1,5 @@
 import UserService from "../services/user-service.js";
-import { validationResult } from 'express-validator';;
+import { validationResult } from 'express-validator';
 
 export default class UserController {
   static async register(req, res, next) {
@@ -7,7 +7,7 @@ export default class UserController {
       const { email, password } = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).json((errors.array()))
+        return res.status(400).json((errors.array()));
       }
 
       const result = await UserService.register(email, password)
@@ -16,7 +16,7 @@ export default class UserController {
         return res.json(result.user)
       }
 
-      return res.status(result.code).json(result)
+      return res.status(result.code).json(result);
     } catch(error) {
       res.status(500).json({
         code: 500,
@@ -34,21 +34,47 @@ export default class UserController {
         return res.json(result.user)
       }
 
-      return res.status(result.code).json(result)
-      
+      return res.status(result.code).json(result);
     } catch(error) {
       res.status(500).json({
         code: 500,
         message: 'Failed to log in'
+      });
+    }
+  }
+
+  static async getMe (req, res, next) {
+    try {
+      const result = await UserService.getUser(req.userId);
+
+      if (result.code === 200) {
+        return res.json(result.user);
+      } 
+      
+      return res.status(result.code).json(result);
+    } catch(error) {
+      res.status(500).json({
+        code: 500,
+        message: 'Server error'
       })
     }
   }
 
   static async getUser (req, res, next) {
     try {
+      const result = await UserService.getUser(req.params.userId);
 
+      if (result.code === 200) {
+        return res.json(result.user)
+      }
+
+      return res.status(result.code).json(result);
     } catch(error) {
-      
+      console.log(error)
+      res.status(500).json({
+        code: 500,
+        message: 'Server error'
+      })
     }
   }
 }

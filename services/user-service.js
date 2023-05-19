@@ -16,7 +16,7 @@ export default class UserService {
 
       const token = jwt.sign(
         {
-          _id: user._id
+          _id: user.dataValues.id
         },
         'secret84jfs0345jlvaw',
         {
@@ -81,6 +81,34 @@ export default class UserService {
       return {
         code: 500,
         message: 'Failed to log in'
+      }
+    }
+  }
+
+  static async getUser(id) {
+    try {
+      const user = await User.findByPk(id)
+
+      if (!UserService) {
+        return {
+          code: 404,
+          message: 'User is not found'
+        }
+      }
+
+      const { password, createdAt, updatedAt, ...userData} = user.dataValues
+
+      return {
+        code: 200,
+        user: {
+          ...userData
+        }
+      }
+    } catch (error) {
+      console.log(error)
+      return {
+        code: 500,
+        message: 'Server error'
       }
     }
   }

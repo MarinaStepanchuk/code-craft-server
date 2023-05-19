@@ -1,7 +1,8 @@
 const routes = {
   LOGIN: '/login',
   REGISTER: '/register',
-  USERS: '/users',
+  ME: '/me',
+  USER: '/user/:userId'
 }
 
 export { routes }
