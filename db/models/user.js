@@ -1,7 +1,8 @@
 import sequelize from "../db.js";
 import { Sequelize } from 'sequelize';
+// import Post from "./post.js";
 
-const User = sequelize.define("user", {
+const User = sequelize.define("User", {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -36,7 +37,5 @@ const User = sequelize.define("user", {
     type: Sequelize.STRING,
   },
 });
-
-// User.create({ email: "Jane@mail.ru", password: '12345' })
 
 export default User;

@@ -1,7 +1,7 @@
 import express from 'express';
 import router from './router/router.js';
 import sequelize from './db/db.js';
-import User from './db/models/user.js';
+// import User from './db/models/user.js';
 
 const app = express();
 const port = 3001;
