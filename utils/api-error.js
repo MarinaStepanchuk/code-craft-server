@@ -1,3 +1,5 @@
+import { errorsObject } from "./constants.js";
+
 export default class ApiError extends Error {
   constructor(status, message, errors = []) {
     super(message);
@@ -6,7 +8,7 @@ export default class ApiError extends Error {
   }
 
   static UnauthorizedError() {
-    return new ApiError(401, 'User is not authorized');
+    return new ApiError(401, errorsObject.unauthorizedUser);
   }
 
   static BadRequest(message, errors = []) {

@@ -1,6 +1,7 @@
 import UserService from '../services/user-service.js';
 import { validationResult } from 'express-validator';
 import ApiError from '../utils/api-error.js';
+import { errorsObject } from '../utils/constants.js';
 
 export default class UserController {
   static async register(req, res, next) {
@@ -10,11 +11,10 @@ export default class UserController {
 
       if (!errors.isEmpty()) {
         const errorsMessages = errors.array().map((error) => error.msg);
-        return next(ApiError.BadRequest('Validation error', errorsMessages));
+        return next(ApiError.BadRequest(errorsObject.validation, errorsMessages));
       }
 
       const result = await UserService.register(email, password);
-
       res.cookie('refreshToken', result.refreshToken, { maxAge: 30 * 24 * 60 * 60* 1000, httpOnly: true });
       return res.json(result);
     } catch(error) {
@@ -48,7 +48,7 @@ export default class UserController {
     try {
       const activationLink = req.params.link;
       await UserService.activate(activationLink);
-      return res.redirect('http://localhost:3000');
+      return res.redirect(process.env.CLIENT_URL);
     } catch(error) {
       next(error);
     }

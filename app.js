@@ -3,14 +3,21 @@ import router from './router/router.js';
 import sequelize from './db/db.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import errorMiddleware from './middleware/error-middleware.js'
+import errorMiddleware from './middleware/error-middleware.js';
+import * as dotenv from 'dotenv'
+dotenv.config();
 
 const app = express();
 const port = 3001;
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors(
+  {
+    credentials: true,
+    origin: process.env.CLIENT_URL
+  }
+));
 
 app.use('/api', router);
 app.use(errorMiddleware);

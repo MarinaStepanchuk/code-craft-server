@@ -1,4 +1,5 @@
 import PostService from '../services/post-service.js';
+import { errorsObject } from '../utils/constants.js';
 
 export default class PostController {
   static async createPost (req, res, next) {
@@ -7,7 +8,7 @@ export default class PostController {
 
       if (!errors.isEmpty()) {
         const errorsMessages = errors.array().map((error) => error.msg);
-        return next(ApiError.BadRequest('Validation error', errorsMessages));
+        return next(ApiError.BadRequest(errorsObject.validation, errorsMessages));
       }
 
       const { title, text, banner, tags } = req.body;

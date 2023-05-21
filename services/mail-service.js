@@ -5,13 +5,13 @@ export default class MailService {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'code.craft.server2023@gmail.com',
-        pass: 'vbwlhedyrlppqyud'
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD
       }
     });
 
     await transporter.sendMail({
-      from: 'code.craft2023@gmail.com',
+      from: process.env.SMTP_USER,
       to,
       subject: 'Activating an account on the site code-craft.com',
       text: '',
@@ -23,5 +23,7 @@ export default class MailService {
           </div>
         `
     });
+
+    
   }
 }

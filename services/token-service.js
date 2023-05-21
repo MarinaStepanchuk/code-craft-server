@@ -3,8 +3,8 @@ import Token from '../db/models/token.js';
 
 export default class TokenService {
   static generateTokens(payload) {
-    const accessToken = jwt.sign(payload, 'secret84jfs0345jlvaw', {expiresIn: '30m'});
-    const refreshToken = jwt.sign(payload, 'secret567mhngbfv', {expiresIn: '30d'});
+    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: '30m'});
+    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {expiresIn: '30d'});
     return {
       accessToken,
       refreshToken
@@ -13,7 +13,7 @@ export default class TokenService {
 
   static validateAccessToken(token) {
     try {
-      const user = jwt.verify(token, 'secret84jfs0345jlvaw');
+      const user = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
       return user;
     } catch(error) {
       return null;
@@ -22,7 +22,7 @@ export default class TokenService {
 
   static validateRefreshToken(token) {
     try {
-      const user = jwt.verify(token, 'secret567mhngbfv');
+      const user = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
       return user;
     } catch(error) {
       return null;

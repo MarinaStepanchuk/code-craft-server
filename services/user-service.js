@@ -4,13 +4,14 @@ import { v4 as uuidv4 } from 'uuid';
 import mailService from './mail-service.js';
 import TokenService from './token-service.js';
 import ApiError from '../utils/api-error.js';
+import { errorsObject } from '../utils/constants.js';
 
 export default class UserService {
   static async register(email, password) {
     const candidate = await User.findOne({ where: { email: email } });
 
     if(candidate) {
-      throw ApiError.BadRequest('A user with this email address already exists');
+      throw ApiError.BadRequest(errorsObject.userIsExist);
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -22,7 +23,7 @@ export default class UserService {
       password: passwordHash
     };
     const user = await User.create(doc);
-    await mailService.sendActivationMail(email, `http:/localhost:3001/api/activate/${activationLink}`);
+    await mailService.sendActivationMail(email, `${process.env.API_URL}/api/activate/${activationLink}`);
     const tokens = TokenService.generateTokens({email, passwordHash, id: user.dataValues.id});
     await TokenService.saveToken(user.dataValues.id, tokens.refreshToken);
     return {
@@ -35,7 +36,7 @@ export default class UserService {
     const user = await User.findOne({ where: { activationLink: activationLink } });
 
     if (!user) {
-      throw ApiError.BadRequest('Incorrect activation link');
+      throw ApiError.BadRequest(errorsObject.incorrectLink);
     }
 
     await User.update({ isActivated: true }, {
@@ -49,13 +50,17 @@ export default class UserService {
     const user = await User.findOne({ where: { email: email } });
 
     if (!user) {
-      throw ApiError.BadRequest('User is not registered');
+      throw ApiError.BadRequest(errorsObject.unregisteredUser);
     }
+
+    // if (!user.isActivated) {
+    //   throw ApiError.BadRequest(errorsObject.confirmEmail);
+    // }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
 
     if (!isValidPassword) {
-      throw ApiError.BadRequest('Incorrect login or password');
+      throw ApiError.BadRequest(errorsObject.incorrectLogin);
     }
 
     const tokens = TokenService.generateTokens({email, password: user.password, id: user.dataValues.id});
@@ -96,7 +101,7 @@ export default class UserService {
     const user = await User.findByPk(id)
 
     if (!UserService) {
-      throw ApiError.NotFound('User is not found');
+      throw ApiError.NotFound(errorsObject.notFoundUser);
     }
 
     const { password, createdAt, updatedAt, ...userData} = user.dataValues;
