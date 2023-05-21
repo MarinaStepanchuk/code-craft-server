@@ -1,6 +1,6 @@
 {
   "name": "code-craft-server",
-  "description": "",
+  "description": "Server for Code Craft app",
   "version": "1.0.0",
   "main": "app.js",
   "type": "module",

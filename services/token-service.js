@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
-import Token from "../db/models/token.js";
+import jwt from 'jsonwebtoken';
+import Token from '../db/models/token.js';
 
 export default class TokenService {
   static generateTokens(payload) {
@@ -8,12 +8,29 @@ export default class TokenService {
     return {
       accessToken,
       refreshToken
+    };
+  }
+
+  static validateAccessToken(token) {
+    try {
+      const user = jwt.verify(token, 'secret84jfs0345jlvaw');
+      return user;
+    } catch(error) {
+      return null;
+    }
+  }
+
+  static validateRefreshToken(token) {
+    try {
+      const user = jwt.verify(token, 'secret567mhngbfv');
+      return user;
+    } catch(error) {
+      return null;
     }
   }
 
   static async saveToken(userId, refreshToken) {
-    
-    const tokenData = await Token.findOne({ where: { user_id: userId } })
+    const tokenData = await Token.findOne({ where: { user_id: userId } });
 
     if(tokenData) {
       await Token.update({ refreshToken: refreshToken }, {
@@ -21,10 +38,28 @@ export default class TokenService {
           user_id: userId
         }
       });
+      return tokenData;
     }
 
-    const token = await Token.create({ user_id: userId, refreshToken })
-
+    const token = await Token.create({ refreshToken: refreshToken, user_id: userId });
     return token;
+  }
+
+  static async removeToken(refreshToken) {
+    const tokenData = await Token.destroy({
+      where: {
+        refreshToken: refreshToken
+      }
+    });
+    return tokenData;
+  }
+
+  static async findToken(refreshToken) {
+    const tokenData = await Token.findOne({
+      where: {
+        refreshToken: refreshToken
+      }
+    });
+    return tokenData;
   }
 }

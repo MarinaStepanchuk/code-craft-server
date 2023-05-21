@@ -1,6 +1,5 @@
-import sequelize from "../db.js";
+import sequelize from '../db.js';
 import { Sequelize } from 'sequelize';
-// import Post from "./post.js";
 
 const User = sequelize.define("User", {
   id: {
@@ -44,6 +43,5 @@ const User = sequelize.define("User", {
     type: Sequelize.STRING,
   }
 });
-
 
 export default User;

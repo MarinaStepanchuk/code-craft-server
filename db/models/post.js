@@ -1,6 +1,6 @@
-import sequelize from "../db.js";
+import sequelize from '../db.js';
 import { Sequelize } from 'sequelize';
-import User from "./user.js";
+import User from './user.js';
 
 const Post = sequelize.define("Post", {
   id: {
@@ -46,6 +46,5 @@ User.hasMany(Post, {
   }
 })
 Post.belongsTo(User, {foreignKey:'id'})
-// Post.hasMany(Tag)
 
 export default Post;

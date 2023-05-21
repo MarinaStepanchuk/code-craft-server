@@ -1,6 +1,6 @@
-import sequelize from "../db.js";
+import sequelize from '../db.js';
 import { Sequelize } from 'sequelize';
-import User from "./user.js";
+import User from './user.js';
 
 const Token = sequelize.define("Token", {
   id: {
@@ -22,12 +22,12 @@ const Token = sequelize.define("Token", {
   }
 });
 
-User.hasMany(Token, {
+User.hasOne(Token, {
   foreignKey: {
     name:'user_id',
     allowNull: false
   }
 })
-Token.belongsTo(User, {foreignKey:'id'})
+Token.belongsTo(User)
 
 export default Token;

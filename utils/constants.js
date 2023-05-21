@@ -7,6 +7,6 @@ const routes = {
   ME: '/me',
   USER: '/user/:userId',
   POSTS: '/posts'
-}
+};
 
-export { routes }
+export { routes };
