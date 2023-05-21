@@ -24,10 +24,10 @@ const Post = sequelize.define("Post", {
   banner: {
     type: Sequelize.STRING,
   },
-  view_count: {
+  viewCount: {
     type: Sequelize.INTEGER,
   },
-  like_count: {
+  likeCount: {
     type: Sequelize.INTEGER,
   },
   user_id: {

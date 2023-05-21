@@ -1,5 +1,6 @@
 import UserService from "../services/user-service.js";
 import { validationResult } from 'express-validator';
+import ApiError from "../utils/api-error.js";
 
 export default class UserController {
   static async register(req, res, next) {
@@ -7,21 +8,17 @@ export default class UserController {
       const { email, password } = req.body;
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(400).json((errors.array()));
+        const errorsMessages = errors.array().map((error) => error.msg);
+        return next(ApiError.BadRequest('Validation error', errorsMessages));
       }
 
-      const result = await UserService.register(email, password)
+      const result = await UserService.register(email, password);
 
-      if (result.code === 200) {
-        return res.json(result.user)
-      }
+      res.cookie('refreshToken', result.user.refreshToken, { maxAge: 30 * 24 * 60 * 60* 1000, httpOnly: true });
+      return res.json(result.user)
 
-      return res.status(result.code).json(result);
     } catch(error) {
-      res.status(500).json({
-        code: 500,
-        message: 'Failed to register'
-      })
+      next(error);
     }
   }
 
@@ -36,10 +33,47 @@ export default class UserController {
 
       return res.status(result.code).json(result);
     } catch(error) {
-      res.status(500).json({
-        code: 500,
-        message: 'Failed to log in'
-      });
+      next(error);
+    }
+  }
+
+  static async logout(req, res, next) {
+    try {
+      const { email, password } = req.body;
+      const result = await UserService.login(email, password)
+
+      if (result.code === 200) {
+        return res.json(result.user)
+      }
+
+      return res.status(result.code).json(result);
+    } catch(error) {
+      next(error);
+    }
+  }
+
+  static async activate(req, res, next) {
+    try {
+      const activationLink = req.params.link;
+      await UserService.activate(activationLink)
+      return res.redirect('http://localhost:3000')
+    } catch(error) {
+      next(error);
+    }
+  }
+
+  static async refresh(req, res, next) {
+    try {
+      const { email, password } = req.body;
+      const result = await UserService.login(email, password)
+
+      if (result.code === 200) {
+        return res.json(result.user)
+      }
+
+      return res.status(result.code).json(result);
+    } catch(error) {
+      next(error);
     }
   }
 
@@ -53,10 +87,7 @@ export default class UserController {
       
       return res.status(result.code).json(result);
     } catch(error) {
-      res.status(500).json({
-        code: 500,
-        message: 'Server error'
-      })
+      next(error);
     }
   }
 
@@ -70,11 +101,7 @@ export default class UserController {
 
       return res.status(result.code).json(result);
     } catch(error) {
-      console.log(error)
-      res.status(500).json({
-        code: 500,
-        message: 'Server error'
-      })
+      next(error);
     }
   }
 }

@@ -36,6 +36,14 @@ const User = sequelize.define("User", {
   instagram: {
     type: Sequelize.STRING,
   },
+  isActivated: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
+  },
+  activationLink: {
+    type: Sequelize.STRING,
+  }
 });
+
 
 export default User;
