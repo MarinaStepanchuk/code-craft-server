@@ -45,6 +45,6 @@ User.hasMany(Post, {
     allowNull: false
   }
 })
-Post.belongsTo(User, {foreignKey:'id'})
+Post.belongsTo(User)
 
 export default Post;

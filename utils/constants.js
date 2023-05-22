@@ -6,7 +6,8 @@ const routes = {
   REFRESH: '/refresh',
   ME: '/me',
   USER: '/user/:userId',
-  POSTS: '/posts'
+  POSTS: '/posts',
+  REGISTER_GOOGLE: '/register-google'
 };
 
 const errorsObject = {

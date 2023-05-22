@@ -82,4 +82,14 @@ export default class UserController {
       next(error);
     }
   }
+
+  static async registerWithGoogle (req, res, next) {
+    try {
+      const { id, email } = req.body;
+      const result = await UserService.registerWithGoogle(id, email);
+      return res.json(result);
+    } catch(error) {
+      next(error);
+    }
+  }
 }
