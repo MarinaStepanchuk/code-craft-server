@@ -7,7 +7,7 @@ const routes = {
   ME: '/me',
   USER: '/user/:userId',
   POSTS: '/posts',
-  REGISTER_GOOGLE: '/register-google'
+  REGISTER_PROVIDER: '/register-provider'
 };
 
 const errorsObject = {

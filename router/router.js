@@ -11,7 +11,7 @@ router.post(routes.REGISTER, registerValidation, UserController.register);
 router.post(routes.LOGIN, UserController.login);
 router.post(routes.LOGOUT, UserController.logout);
 router.get(routes.ACTIVATE, UserController.activate);
-router.post(routes.REGISTER_GOOGLE, UserController.registerWithGoogle)
+router.post(routes.REGISTER_PROVIDER, UserController.registerWithProvider)
 router.get(routes.REFRESH, UserController.refresh);
 router.get(routes.ME, UserController.getMe);
 router.get(routes.USER, UserController.getUser);

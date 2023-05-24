@@ -3,13 +3,8 @@ import { Sequelize } from 'sequelize';
 
 const User = sequelize.define("User", {
   id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-    allowNull: false
-  },
-  user_id: {
     type: Sequelize.STRING,
+    primaryKey: true,
     allowNull: false,
     unique: true
   },

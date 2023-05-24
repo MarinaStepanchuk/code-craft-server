@@ -12,7 +12,7 @@ export default class PostController {
       }
 
       const { title, text, banner, tags } = req.body;
-      const user = req.user_id;
+      const user = req.userId;
       const doc = { title, text, banner, tags, user };
       const post = await PostService.create(doc);
       return res.json(post);

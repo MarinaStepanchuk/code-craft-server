@@ -83,10 +83,10 @@ export default class UserController {
     }
   }
 
-  static async registerWithGoogle (req, res, next) {
+  static async registerWithProvider (req, res, next) {
     try {
-      const { id, email } = req.body;
-      const result = await UserService.registerWithGoogle(id, email);
+      const { id, email, provider } = req.body;
+      const result = await UserService.registerWithProvider(id, email, provider);
       return res.json(result);
     } catch(error) {
       next(error);

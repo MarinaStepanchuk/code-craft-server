@@ -13,21 +13,13 @@ const Token = sequelize.define("Token", {
     type: Sequelize.TEXT('long'),
     allowNull: false
   },
-  user_id: {
-    type: Sequelize.INTEGER,
-    references: {
-      model: User,
-      key: 'id'
-    }
-  }
 });
 
 User.hasOne(Token, {
   foreignKey: {
-    name:'user_id',
     allowNull: false
   }
 })
-Token.belongsTo(User)
+Token.belongsTo(User);
 
 export default Token;

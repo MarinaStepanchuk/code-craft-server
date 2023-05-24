@@ -30,18 +30,10 @@ const Post = sequelize.define("Post", {
   likeCount: {
     type: Sequelize.INTEGER,
   },
-  user_id: {
-    type: Sequelize.INTEGER,
-    references: {
-      model: User,
-      key: 'id'
-    }
-  }
 });
 
 User.hasMany(Post, {
   foreignKey: {
-    name:'user_id',
     allowNull: false
   }
 })

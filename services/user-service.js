@@ -18,19 +18,23 @@ export default class UserService {
     const passwordHash = await bcrypt.hash(password, salt);
     const activationLink = uuidv4();
     const id = uuidv4();
-
     const doc = {
-      user_id:id,
+      id,
       email,
       activationLink: activationLink,
       password: passwordHash
     };
     const user = await User.create(doc)
+    
     await mailService.sendActivationMail(email, `${process.env.API_URL}/api/activate/${activationLink}`);
-    const tokens = TokenService.generateTokens({email, passwordHash, id: user.dataValues.id});
-    await TokenService.saveToken(user.dataValues.id, tokens.refreshToken);
+
+    const tokens = TokenService.generateTokens({email, passwordHash, id: user.id});
+    await TokenService.saveToken(user.id, tokens.refreshToken);
+
     return {
       email: user.email,
+      name: user.name,
+      avatarUrl: user.avatarUrl,
       id: user.dataValues.id,
       ...tokens
     };
@@ -72,6 +76,8 @@ export default class UserService {
 
     return {
       email: user.email,
+      name: user.name,
+      avatarUrl: user.avatarUrl,
       id: user.dataValues.id,
       ...tokens
     };
@@ -98,6 +104,8 @@ export default class UserService {
     await TokenService.saveToken(user.dataValues.id, tokens.refreshToken);
     return {
       email: user.email,
+      name: user.name,
+      avatarUrl: user.avatarUrl,
       ...tokens
     };
   }
@@ -113,19 +121,27 @@ export default class UserService {
     return { ...userData };
   }
 
-  static async registerWithGoogle(id, email) {
-    const candidate = await User.findOne({ where: { user_id: id } });
+  static async registerWithProvider(id, email, provider) {
+    const idUser = provider === 'google' ? `google${id}` : `github${id}`;
+    const candidate = await User.findOne({ where: { id: idUser } });
     if(!candidate) {
       const doc = {
         email,
-        user_id: id,
-        password: 'google'
+        id: idUser,
+        password: provider
       };
       const user = await User.create(doc);
-
-      return user.dataValues.email
+      return {
+        email: user.email,
+        name: user.name,
+        avatarUrl: user.avatarUrl,
+      }
     }
 
-    return candidate.dataValues.email
+    return {
+      email: candidate.email,
+      name: candidate.name,
+      avatarUrl: candidate.avatarUrl,
+    }
   }
 }
