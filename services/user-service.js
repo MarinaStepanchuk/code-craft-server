@@ -32,10 +32,14 @@ export default class UserService {
     await TokenService.saveToken(user.id, tokens.refreshToken);
 
     return {
+      id: user.id,
       email: user.email,
       name: user.name,
       avatarUrl: user.avatarUrl,
-      id: user.dataValues.id,
+      bio: user.bio,
+      twitter: user.twitter,
+      mail: user.mail,
+      instagram: user.instagram,
       ...tokens
     };
   }
@@ -75,10 +79,14 @@ export default class UserService {
     await TokenService.saveToken(user.dataValues.id, tokens.refreshToken);
 
     return {
+      id: user.id,
       email: user.email,
       name: user.name,
       avatarUrl: user.avatarUrl,
-      id: user.dataValues.id,
+      bio: user.bio,
+      twitter: user.twitter,
+      mail: user.mail,
+      instagram: user.instagram,
       ...tokens
     };
   }
@@ -103,9 +111,14 @@ export default class UserService {
     const tokens = TokenService.generateTokens({email: user.email, password: user.password, id: user.dataValues.id});
     await TokenService.saveToken(user.dataValues.id, tokens.refreshToken);
     return {
+      id: user.id,
       email: user.email,
       name: user.name,
       avatarUrl: user.avatarUrl,
+      bio: user.bio,
+      twitter: user.twitter,
+      mail: user.mail,
+      instagram: user.instagram,
       ...tokens
     };
   }
@@ -121,27 +134,93 @@ export default class UserService {
     return { ...userData };
   }
 
-  static async registerWithProvider(id, email, provider) {
-    const idUser = provider === 'google' ? `google${id}` : `github${id}`;
-    const candidate = await User.findOne({ where: { id: idUser } });
+  static async getUserByEmail(email) {
+    const user = await User.findOne(({ where: { email: email } }))
+
+    if (!user) {
+      throw ApiError.NotFound(errorsObject.notFoundUser);
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      avatarUrl: user.avatarUrl,
+      bio: user.bio,
+      twitter: user.twitter,
+      mail: user.mail,
+      instagram: user.instagram
+    }
+  }
+
+  static async updateUser(user) {
+    const {id, name = null, avatarUrl = null, bio = null, twitter = null, mail = null, instagram  = null} = user;
+    const result = await User.update({
+      name: name,
+      avatarUrl: avatarUrl,
+      bio: bio,
+      twitter: twitter,
+      mail: mail,
+      instagram: instagram
+    }, {
+      where: {
+        id: id
+      }
+    })
+
+    if(!result) {
+      throw ApiError.BadRequest(errorsObject.incorrectData);
+    }
+
+    const updateUser = await User.findByPk(id)
+
+    return {
+      id: updateUser.id,
+      email: updateUser.email,
+      name: updateUser.name,
+      avatarUrl: updateUser.avatarUrl,
+      bio: updateUser.bio,
+      twitter: updateUser.twitter,
+      mail: updateUser.mail,
+      instagram: updateUser.instagram
+    }
+  }
+
+  static async registerWithProvider(id, email, avatarUrl, provider) {
+    const candidate = await User.findOne(({ where: { email: email } }));
     if(!candidate) {
+      const idUser = provider === 'google' ? `google${id}` : `github${id}`;
       const doc = {
-        email,
         id: idUser,
-        password: provider
+        email,
+        avatarUrl,
+        password: provider,
+        isActivated: true
       };
+
       const user = await User.create(doc);
+      
       return {
+        id: user.id,
         email: user.email,
-        name: user.name,
-        avatarUrl: user.avatarUrl,
+        name: user.name | null,
+        avatarUrl: user.avatarUrl | null,
+        bio: user.bio | null,
+        twitter: user.twitter | null,
+        mail: user.mail | null,
+        instagram: user.instagram | null
       }
     }
 
     return {
+      id: candidate.id,
       email: candidate.email,
-      name: candidate.name,
-      avatarUrl: candidate.avatarUrl,
+      name: candidate.name | null,
+      avatarUrl: candidate.avatarUrl | null,
+      bio: candidate.bio | null,
+      twitter: candidate.twitter | null,
+      mail: candidate.mail | null,
+      instagram: candidate.instagram | null
     }
   }
 }

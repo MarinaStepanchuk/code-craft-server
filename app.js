@@ -4,11 +4,15 @@ import sequelize from './db/db.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import errorMiddleware from './middleware/error-middleware.js';
-import * as dotenv from 'dotenv'
+import * as dotenv from 'dotenv';
+import bodyParser  from 'body-parser';
+
+
 dotenv.config();
 
 const app = express();
 const port = 3001;
+
 
 app.use(express.json());
 app.use(cookieParser());
@@ -18,7 +22,6 @@ app.use(cors(
     origin: process.env.CLIENT_URL
   }
 ));
-
 app.use('/api', router);
 app.use(errorMiddleware);
 

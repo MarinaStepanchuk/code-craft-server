@@ -83,10 +83,33 @@ export default class UserController {
     }
   }
 
+  static async getUserByEmail (req, res, next) {
+    try {
+      const result = await UserService.getUserByEmail(decodeURIComponent(req.params.email));
+      return res.json(result);
+    } catch(error) {
+      next(error);
+    }
+  }
+
+  static async updateUser (req, res, next) {
+    try {
+      const form  = req.body;
+      console.log(req.file)
+      console.log(req.body)
+      
+      // const result = await UserService.updateUser(form);
+      // return res.json(result);
+      return res.json(form);
+    } catch(error) {
+      next(error);
+    }
+  }
+
   static async registerWithProvider (req, res, next) {
     try {
-      const { id, email, provider } = req.body;
-      const result = await UserService.registerWithProvider(id, email, provider);
+      const { id, email, avatarUrl, provider } = req.body;
+      const result = await UserService.registerWithProvider(id, decodeURIComponent(email), avatarUrl, provider);
       return res.json(result);
     } catch(error) {
       next(error);

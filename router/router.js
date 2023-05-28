@@ -4,8 +4,20 @@ import { registerValidation, postCreateValidation } from '../utils/validations.j
 import UserController from '../controllers/user-controller.js';
 import PostController from '../controllers/post-controller.js'
 import authMiddleware from '../middleware/auth-middleware.js';
+import multer from 'multer';
 
 const router = Router();
+
+// const storage = multer.diskStorage({
+//   destination: (_, __, cb) => {
+//     cb(null, 'uploads');
+//   },
+//   filename: (_, file, cb) => {
+//     cb(null, file.originalname);
+//   },
+// });
+
+const upload = multer()
 
 router.post(routes.REGISTER, registerValidation, UserController.register);
 router.post(routes.LOGIN, UserController.login);
@@ -15,6 +27,8 @@ router.post(routes.REGISTER_PROVIDER, UserController.registerWithProvider)
 router.get(routes.REFRESH, UserController.refresh);
 router.get(routes.ME, UserController.getMe);
 router.get(routes.USER, UserController.getUser);
+router.get(routes.USER_BY_EMAIL, UserController.getUserByEmail);
+router.put(routes.USER_UPDATE, upload.single('avatar'), UserController.updateUser)
 router.post(routes.POSTS, postCreateValidation, PostController.createPost)
 
 export default router;
