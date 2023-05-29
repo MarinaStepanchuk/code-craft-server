@@ -22,7 +22,8 @@ const errorsObject = {
   incorrectLogin: 'Incorrect login or password',
   notFoundUser: 'User is not found',
   confirmEmail: 'You have not confirmed your email address.',
-  incorrectData: 'Incorrect data'
+  incorrectData: 'Incorrect data',
+  failedLoadImage: 'Failed to load image',
 };
 
 export { routes, errorsObject };

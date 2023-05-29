@@ -2,6 +2,7 @@ import UserService from '../services/user-service.js';
 import { validationResult } from 'express-validator';
 import ApiError from '../utils/api-error.js';
 import { errorsObject } from '../utils/constants.js';
+import FirebaseService from '../services/firebase-service.js';
 
 export default class UserController {
   static async register(req, res, next) {
@@ -94,13 +95,19 @@ export default class UserController {
 
   static async updateUser (req, res, next) {
     try {
-      const form  = req.body;
-      console.log(req.file)
-      console.log(req.body)
-      
-      // const result = await UserService.updateUser(form);
-      // return res.json(result);
-      return res.json(form);
+      const {id, name, bio, twitter, mail, instagram}  = req.body;
+      let avatarUrl = req.file ? await FirebaseService.saveFile(req.file) : null;
+      console.log(avatarUrl)
+      const result = await UserService.updateUser({
+        id,
+        name,
+        bio,
+        twitter,
+        mail,
+        instagram,
+        avatarUrl
+      });
+      return res.json(result);
     } catch(error) {
       next(error);
     }

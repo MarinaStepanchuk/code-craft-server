@@ -8,16 +8,7 @@ import multer from 'multer';
 
 const router = Router();
 
-// const storage = multer.diskStorage({
-//   destination: (_, __, cb) => {
-//     cb(null, 'uploads');
-//   },
-//   filename: (_, file, cb) => {
-//     cb(null, file.originalname);
-//   },
-// });
-
-const upload = multer()
+const upload = multer({storage: multer.memoryStorage()})
 
 router.post(routes.REGISTER, registerValidation, UserController.register);
 router.post(routes.LOGIN, UserController.login);

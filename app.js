@@ -5,13 +5,17 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import errorMiddleware from './middleware/error-middleware.js';
 import * as dotenv from 'dotenv';
-import bodyParser  from 'body-parser';
-
+import { initializeApp } from "firebase/app";
+import { getStorage, ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import firebaseConfig from './firebase.config.js';
 
 dotenv.config();
 
 const app = express();
 const port = 3001;
+
+initializeApp(firebaseConfig);
+export const storage = getStorage();
 
 
 app.use(express.json());
