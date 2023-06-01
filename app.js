@@ -6,7 +6,7 @@ import cors from 'cors';
 import errorMiddleware from './middleware/error-middleware.js';
 import * as dotenv from 'dotenv';
 import { initializeApp } from "firebase/app";
-import { getStorage, ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { getStorage } from 'firebase/storage';
 import firebaseConfig from './firebase.config.js';
 
 dotenv.config();

@@ -15,7 +15,6 @@ export default class FirebaseService {
       const downloadUrl = await getDownloadURL(snapshot.ref);
       return downloadUrl;
     } catch (error) {
-      console.log(error)
       throw ApiError.LoadingError(errorsObject.failedLoadImage);
     }
   }

@@ -21,5 +21,6 @@ router.get(routes.USER, UserController.getUser);
 router.get(routes.USER_BY_EMAIL, UserController.getUserByEmail);
 router.put(routes.USER_UPDATE, upload.single('avatar'), UserController.updateUser)
 router.post(routes.POSTS, postCreateValidation, PostController.createPost)
+router.post(routes.SAVE_IMAGE, upload.single('image'), PostController.saveImage)
 
 export default router;
