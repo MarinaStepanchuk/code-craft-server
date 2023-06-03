@@ -97,7 +97,6 @@ export default class UserController {
     try {
       const {id, name, bio, twitter, mail, instagram}  = req.body;
       let avatarUrl = req.file ? await FirebaseService.saveFile(req.file) : null;
-      console.log(avatarUrl)
       const result = await UserService.updateUser({
         id,
         name,

@@ -10,7 +10,8 @@ const routes = {
   POSTS: '/posts',
   REGISTER_PROVIDER: '/register-provider',
   USER_BY_EMAIL: '/user/email/:email',
-  SAVE_IMAGE: '/save-image'
+  SAVE_IMAGE: '/save-image',
+  REMOVE_IMAGES: '/remove-images',
 };
 
 const errorsObject = {

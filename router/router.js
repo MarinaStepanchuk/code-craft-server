@@ -19,8 +19,9 @@ router.get(routes.REFRESH, UserController.refresh);
 router.get(routes.ME, UserController.getMe);
 router.get(routes.USER, UserController.getUser);
 router.get(routes.USER_BY_EMAIL, UserController.getUserByEmail);
-router.put(routes.USER_UPDATE, upload.single('avatar'), UserController.updateUser)
-router.post(routes.POSTS, postCreateValidation, PostController.createPost)
-router.post(routes.SAVE_IMAGE, upload.single('image'), PostController.saveImage)
+router.put(routes.USER_UPDATE, upload.single('avatar'), UserController.updateUser);
+router.post(routes.POSTS, upload.single('banner'), PostController.createPost);
+router.post(routes.SAVE_IMAGE, upload.single('image'), PostController.saveImage);
+router.post(routes.REMOVE_IMAGES, PostController.removeImages);
 
 export default router;

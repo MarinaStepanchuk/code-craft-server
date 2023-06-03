@@ -24,7 +24,7 @@ export default class UserService {
       activationLink: activationLink,
       password: passwordHash
     };
-    const user = await User.create(doc)
+    const user = await User.create(doc);
     
     await mailService.sendActivationMail(email, `${process.env.API_URL}/api/activate/${activationLink}`);
 
@@ -154,39 +154,35 @@ export default class UserService {
   }
 
   static async updateUser(user) {
-    try {
-      const {id, name = null, avatarUrl = null, bio = null, twitter = null, mail = null, instagram  = null} = user;
-      const result = await User.update({
-        name: name,
-        avatarUrl: avatarUrl,
-        bio: bio,
-        twitter: twitter,
-        mail: mail,
-        instagram: instagram
-      }, {
-        where: {
-          id: id
-        }
-      })
-  
-      if(!result) {
-        throw ApiError.BadRequest(errorsObject.incorrectData);
+    const {id, name = null, avatarUrl = null, bio = null, twitter = null, mail = null, instagram  = null} = user;
+    const result = await User.update({
+      name: name,
+      avatarUrl: avatarUrl,
+      bio: bio,
+      twitter: twitter,
+      mail: mail,
+      instagram: instagram
+    }, {
+      where: {
+        id: id
       }
-  
-      const updateUser = await User.findByPk(id)
-  
-      return {
-        id: updateUser.id,
-        email: updateUser.email,
-        name: updateUser.name,
-        avatarUrl: updateUser.avatarUrl,
-        bio: updateUser.bio,
-        twitter: updateUser.twitter,
-        mail: updateUser.mail,
-        instagram: updateUser.instagram
-      }
-    } catch (error) {
-      console.log(error)
+    })
+
+    if(!result) {
+      throw ApiError.BadRequest(errorsObject.incorrectData);
+    }
+
+    const updateUser = await User.findByPk(id)
+
+    return {
+      id: updateUser.id,
+      email: updateUser.email,
+      name: updateUser.name,
+      avatarUrl: updateUser.avatarUrl,
+      bio: updateUser.bio,
+      twitter: updateUser.twitter,
+      mail: updateUser.mail,
+      instagram: updateUser.instagram
     }
   }
 

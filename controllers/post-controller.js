@@ -1,21 +1,22 @@
 import PostService from '../services/post-service.js';
 import { errorsObject } from '../utils/constants.js';
+import ApiError from '../utils/api-error.js';
 import FirebaseService from '../services/firebase-service.js';
 import sharp from 'sharp';
 
 export default class PostController {
-  static async saveImage (req, res, next) {
+  static async saveImage(req, res, next) {
     try {
-      if(!req.file) {
-        return res.json(null)
+      if (!req.file) {
+        return res.json(null);
       }
 
-      switch(req.file.mimetype) {
+      switch (req.file.mimetype) {
         case 'image/jpeg':
           req.file.buffer = await sharp(req.file.buffer)
             .jpeg({
-              quality: 70
-          })
+              quality: 70,
+            })
             .withMetadata()
             .toBuffer();
           break;
@@ -35,26 +36,47 @@ export default class PostController {
 
       const url = await FirebaseService.saveFile(req.file);
       return res.json(url);
-    } catch(error) {
+    } catch (error) {
       next(error);
     }
   }
 
-  static async createPost (req, res, next) {
+  static async removeImages(req, res, next) {
     try {
-      const errors = validationResult(req);
+      const images = req.body;
 
-      if (!errors.isEmpty()) {
-        const errorsMessages = errors.array().map((error) => error.msg);
-        return next(ApiError.BadRequest(errorsObject.validation, errorsMessages));
+      if (images.length === 0) {
+        return res.json(null);
       }
 
-      const { title, text, banner, tags } = req.body;
-      const user = req.userId;
-      const doc = { title, text, banner, tags, user };
-      const post = await PostService.create(doc);
-      return res.json(post);
-    } catch(error) {
+      images.forEach(async (image) => {
+        await FirebaseService.removeImage(image);
+      });
+      return res.json(null);
+    } catch (error) {
+      return res.json(null);
+    }
+  }
+
+  static async createPost(req, res, next) {
+    try {
+      const { creatorId, title, content, date, tags, published } = req.body;
+      console.log(JSON.parse(published));
+      const bannerUrl = req.file
+        ? await FirebaseService.saveFile(req.file)
+        : null;
+      const doc = {
+        title,
+        content,
+        banner: bannerUrl,
+        date: JSON.parse(date),
+        tags,
+        userId: creatorId,
+        published: JSON.parse(published),
+      };
+      const result = await PostService.create(doc);
+      return res.json(result);
+    } catch (error) {
       next(error);
     }
   }

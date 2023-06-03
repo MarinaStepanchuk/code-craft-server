@@ -1,16 +1,16 @@
 import sequelize from '../db.js';
-import { Sequelize } from 'sequelize';
+import { DataTypes } from 'sequelize';
 import User from './user.js';
 
 const Token = sequelize.define("Token", {
   id: {
-    type: Sequelize.INTEGER,
+    type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
     allowNull: false
   },
   refreshToken: {
-    type: Sequelize.TEXT('long'),
+    type: DataTypes.TEXT('long'),
     allowNull: false
   },
 });

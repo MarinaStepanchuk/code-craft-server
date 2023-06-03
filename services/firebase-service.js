@@ -1,6 +1,6 @@
 import ApiError from '../utils/api-error.js';
 import { errorsObject } from '../utils/constants.js';
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { ref, getDownloadURL, uploadBytesResumable, deleteObject } from 'firebase/storage';
 import { storage } from '../app.js';
 
 export default class FirebaseService {
@@ -16,6 +16,15 @@ export default class FirebaseService {
       return downloadUrl;
     } catch (error) {
       throw ApiError.LoadingError(errorsObject.failedLoadImage);
+    }
+  }
+
+  static async removeImage(image) {
+    try {
+      const desertRef = ref(storage, `images/${image}`);
+      if(desertRef) deleteObject(desertRef);
+    } catch(error) {
+      console.log(error)
     }
   }
 }

@@ -9,8 +9,8 @@ const registerValidation = [
 
 const postCreateValidation = [
   body('title', 'The article should have a headline').isLength({ min: 3 }).isString(),
-  body('text', 'The article should contain the text').isLength({ min: 10 }).isString(),
-  body('banner', 'Incorrect link to the image, the article should contain a banner').not().isEmpty().isString()
+  body('content', 'The article should contain the text').isLength({ min: 10 }).isString(),
+  body('banner', 'Incorrect link to the image, the article should contain a banner').not().isEmpty()
 ];
 
 export { registerValidation, postCreateValidation };

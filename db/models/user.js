@@ -1,46 +1,46 @@
 import sequelize from '../db.js';
-import { Sequelize } from 'sequelize';
+import { DataTypes } from 'sequelize';
 
 const User = sequelize.define("User", {
   id: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     primaryKey: true,
     allowNull: false,
     unique: true
   },
   email: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false,
     unique: true
   },
   password: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     allowNull: false
   },
   name: {
-    type: Sequelize.STRING(50),
+    type: DataTypes.STRING(50),
   },
   avatarUrl: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
   },
   bio: {
-    type: Sequelize.STRING(160),
+    type: DataTypes.STRING(160),
   },
   twitter: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
   },
   mail: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
   },
   instagram: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
   },
   isActivated: {
-    type: Sequelize.BOOLEAN,
+    type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
   activationLink: {
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
   }
 });
 
