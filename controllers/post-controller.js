@@ -60,8 +60,7 @@ export default class PostController {
 
   static async createPost(req, res, next) {
     try {
-      const { creatorId, title, content, date, tags, published } = req.body;
-      console.log(JSON.parse(published));
+      const { creatorId, title, content, tags, status } = req.body;
       const bannerUrl = req.file
         ? await FirebaseService.saveFile(req.file)
         : null;
@@ -69,14 +68,25 @@ export default class PostController {
         title,
         content,
         banner: bannerUrl,
-        date: JSON.parse(date),
         tags,
-        userId: creatorId,
-        published: JSON.parse(published),
+        creatorId,
+        status,
       };
       const result = await PostService.create(doc);
       return res.json(result);
     } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  static async getPosts(req, res, next) {
+    try {
+      const { userId, status } = req.query;
+      const result = await PostService.getPosts({ userId, status });
+      return res.json(result);
+    } catch (error) {
+      console.log(error);
       next(error);
     }
   }

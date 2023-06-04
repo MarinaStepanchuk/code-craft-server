@@ -22,15 +22,11 @@ const Post = sequelize.define('Post', {
   banner: {
     type: DataTypes.STRING,
   },
-  date: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
   viewCount: {
     type: DataTypes.INTEGER,
   },
-  published: {
-    type: DataTypes.BOOLEAN,
+  status: {
+    type: DataTypes.ENUM('published', 'draft'),
     allowNull: false,
   },
 });

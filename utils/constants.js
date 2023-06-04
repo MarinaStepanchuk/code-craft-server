@@ -8,6 +8,7 @@ const routes = {
   USER: '/user/:userId',
   USER_UPDATE: '/user',
   POSTS: '/posts',
+  POST: '/post',
   REGISTER_PROVIDER: '/register-provider',
   USER_BY_EMAIL: '/user/email/:email',
   SAVE_IMAGE: '/save-image',
@@ -26,6 +27,7 @@ const errorsObject = {
   confirmEmail: 'You have not confirmed your email address.',
   incorrectData: 'Incorrect data',
   failedLoadImage: 'Failed to load image',
+  notFound: 'data are not found',
 };
 
 export { routes, errorsObject };
