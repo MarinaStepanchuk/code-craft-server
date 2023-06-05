@@ -52,9 +52,9 @@ export default class PostController {
       images.forEach(async (image) => {
         await FirebaseService.removeImage(image);
       });
-      return res.json(null);
+      res.json(null);
     } catch (error) {
-      return res.json(null);
+      res.json(null);
     }
   }
 
@@ -68,14 +68,34 @@ export default class PostController {
         title,
         content,
         banner: bannerUrl,
-        tags,
+        tags: JSON.parse(tags),
         creatorId,
         status,
       };
       const result = await PostService.create(doc);
-      return res.json(result);
+      res.json(result);
     } catch (error) {
-      console.log(error);
+      next(error);
+    }
+  }
+
+  static async updatePost(req, res, next) {
+    try {
+      const { id, title, content, tags, status, banner } = req.body;
+      const bannerUrl = req.file
+        ? await FirebaseService.saveFile(req.file)
+        : null;
+      const doc = {
+        id,
+        title,
+        content,
+        banner: banner || bannerUrl,
+        tags: JSON.parse(tags),
+        status,
+      };
+      const result = await PostService.update(doc);
+      res.json(result);
+    } catch (error) {
       next(error);
     }
   }
@@ -84,9 +104,17 @@ export default class PostController {
     try {
       const { userId, status } = req.query;
       const result = await PostService.getPosts({ userId, status });
-      return res.json(result);
+      res.json(result);
     } catch (error) {
-      console.log(error);
+      next(error);
+    }
+  }
+
+  static async getPostById(req, res, next) {
+    try {
+      const result = await PostService.getPost(req.params.id);
+      res.json(result);
+    } catch (error) {
       next(error);
     }
   }

@@ -33,7 +33,14 @@ router.post(
   upload.single('image'),
   PostController.saveImage
 );
+router.put(routes.POST, upload.single('banner'), PostController.updatePost);
+router.post(
+  routes.SAVE_IMAGE,
+  upload.single('image'),
+  PostController.saveImage
+);
 router.post(routes.REMOVE_IMAGES, PostController.removeImages);
 router.get(routes.POSTS, PostController.getPosts);
+router.get(routes.POST_BY_ID, PostController.getPostById);
 
 export default router;

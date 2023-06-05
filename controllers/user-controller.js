@@ -12,13 +12,16 @@ export default class UserController {
 
       if (!errors.isEmpty()) {
         const errorsMessages = errors.array().map((error) => error.msg);
-        return next(ApiError.BadRequest(errorsObject.validation, errorsMessages));
+        next(ApiError.BadRequest(errorsObject.validation, errorsMessages));
       }
 
       const result = await UserService.register(email, password);
-      res.cookie('refreshToken', result.refreshToken, { maxAge: 30 * 24 * 60 * 60* 1000, httpOnly: true });
-      return res.json(result);
-    } catch(error) {
+      res.cookie('refreshToken', result.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
+      res.json(result);
+    } catch (error) {
       next(error);
     }
   }
@@ -27,9 +30,12 @@ export default class UserController {
     try {
       const { email, password } = req.body;
       const result = await UserService.login(email, password);
-      res.cookie('refreshToken', result.refreshToken, { maxAge: 30 * 24 * 60 * 60* 1000, httpOnly: true });
-      return res.json(result);
-    } catch(error) {
+      res.cookie('refreshToken', result.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
+      res.json(result);
+    } catch (error) {
       next(error);
     }
   }
@@ -39,8 +45,8 @@ export default class UserController {
       const { refreshToken } = req.cookies;
       const token = await UserService.logout(refreshToken);
       res.clearCookie('refreshToken');
-      return res.json(token);
-    } catch(error) {
+      res.json(token);
+    } catch (error) {
       next(error);
     }
   }
@@ -49,8 +55,8 @@ export default class UserController {
     try {
       const activationLink = req.params.link;
       await UserService.activate(activationLink);
-      return res.redirect(process.env.CLIENT_URL);
-    } catch(error) {
+      res.redirect(process.env.CLIENT_URL);
+    } catch (error) {
       next(error);
     }
   }
@@ -59,44 +65,51 @@ export default class UserController {
     try {
       const { refreshToken } = req.cookies;
       const result = await UserService.refresh(refreshToken);
-      res.cookie('refreshToken', result.refreshToken, { maxAge: 30 * 24 * 60 * 60* 1000, httpOnly: true });
-      return res.json(result);
-    } catch(error) {
+      res.cookie('refreshToken', result.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
+      res.json(result);
+    } catch (error) {
       next(error);
     }
   }
 
-  static async getMe (req, res, next) {
+  static async getMe(req, res, next) {
     try {
       const result = await UserService.getUser(req.userId);
-      return res.json(result);
-    } catch(error) {
+      res.json(result);
+    } catch (error) {
       next(error);
     }
   }
 
-  static async getUser (req, res, next) {
+  static async getUser(req, res, next) {
     try {
       const result = await UserService.getUser(req.params.userId);
-      return res.json(result);
-    } catch(error) {
+      res.json(result);
+    } catch (error) {
       next(error);
     }
   }
 
-  static async getUserByEmail (req, res, next) {
+  static async getUserByEmail(req, res, next) {
     try {
-      const result = await UserService.getUserByEmail(decodeURIComponent(req.params.email));
-      return res.json(result);
-    } catch(error) {
+      const result = await UserService.getUserByEmail(
+        decodeURIComponent(req.params.email)
+      );
+      res.json(result);
+    } catch (error) {
       next(error);
     }
   }
 
-  static async updateUser (req, res, next) {
+  static async updateUser(req, res, next) {
     try {
-      const {id, name, bio, twitter, mail, instagram}  = req.body;
-      let avatarUrl = req.file ? await FirebaseService.saveFile(req.file) : null;
+      const { id, name, bio, twitter, mail, instagram } = req.body;
+      let avatarUrl = req.file
+        ? await FirebaseService.saveFile(req.file)
+        : null;
       const result = await UserService.updateUser({
         id,
         name,
@@ -104,20 +117,25 @@ export default class UserController {
         twitter,
         mail,
         instagram,
-        avatarUrl
+        avatarUrl,
       });
-      return res.json(result);
-    } catch(error) {
+      res.json(result);
+    } catch (error) {
       next(error);
     }
   }
 
-  static async registerWithProvider (req, res, next) {
+  static async registerWithProvider(req, res, next) {
     try {
       const { id, email, avatarUrl, provider } = req.body;
-      const result = await UserService.registerWithProvider(id, decodeURIComponent(email), avatarUrl, provider);
-      return res.json(result);
-    } catch(error) {
+      const result = await UserService.registerWithProvider(
+        id,
+        decodeURIComponent(email),
+        avatarUrl,
+        provider
+      );
+      res.json(result);
+    } catch (error) {
       next(error);
     }
   }
