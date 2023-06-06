@@ -100,10 +100,36 @@ export default class PostController {
     }
   }
 
+  static async deletePost(req, res, next) {
+    try {
+      const result = await PostService.delete(req.params.id);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async getPosts(req, res, next) {
     try {
-      const { userId, status } = req.query;
-      const result = await PostService.getPosts({ userId, status });
+      if (req.query.userId) {
+        const { userId, status = 'published' } = req.query;
+        const result = await PostService.getUserPosts({ userId, status });
+        res.json(result);
+      }
+
+      const {
+        limit = 20,
+        offset = 0,
+        sort = 'DESC',
+        status = 'published',
+      } = req.query;
+
+      const result = await PostService.getPosts({
+        limit,
+        offset,
+        sort,
+        status,
+      });
       res.json(result);
     } catch (error) {
       next(error);

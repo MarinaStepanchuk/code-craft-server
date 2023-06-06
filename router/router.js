@@ -42,5 +42,6 @@ router.post(
 router.post(routes.REMOVE_IMAGES, PostController.removeImages);
 router.get(routes.POSTS, PostController.getPosts);
 router.get(routes.POST_BY_ID, PostController.getPostById);
+router.delete(routes.POST_BY_ID, PostController.deletePost);
 
 export default router;
