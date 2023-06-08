@@ -16,9 +16,6 @@ const Post = sequelize.define('Post', {
   content: {
     type: DataTypes.TEXT('long'),
   },
-  tags: {
-    type: DataTypes.JSON,
-  },
   banner: {
     type: DataTypes.STRING,
   },

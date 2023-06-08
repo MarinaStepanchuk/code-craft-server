@@ -75,6 +75,7 @@ export default class PostController {
       const result = await PostService.create(doc);
       res.json(result);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
