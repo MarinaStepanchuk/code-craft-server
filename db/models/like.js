@@ -1,26 +1,32 @@
 import sequelize from '../db.js';
 import { DataTypes } from 'sequelize';
 import User from './user.js';
+import Post from './post.js';
 
-const Token = sequelize.define('token', {
+const Like = sequelize.define('like', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
     allowNull: false,
-  },
-  refreshToken: {
-    type: DataTypes.TEXT('long'),
-    allowNull: false,
+    unique: true,
   },
 });
 
-User.hasOne(Token, {
+User.hasMany(Like, {
   foreignKey: {
     allowNull: false,
   },
   onDelete: 'cascade',
 });
-Token.belongsTo(User);
+Like.belongsTo(User);
 
-export default Token;
+Post.hasMany(Like, {
+  foreignKey: {
+    allowNull: false,
+  },
+  onDelete: 'cascade',
+});
+Like.belongsTo(Post);
+
+export default Like;

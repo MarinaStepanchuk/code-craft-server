@@ -1,8 +1,9 @@
 import sequelize from '../db.js';
-import { Sequelize, DataTypes } from 'sequelize';
+import { DataTypes } from 'sequelize';
 import User from './user.js';
+import Post from './post.js';
 
-const Post = sequelize.define('post', {
+const Comment = sequelize.define('comment', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -10,30 +11,29 @@ const Post = sequelize.define('post', {
     allowNull: false,
     unique: true,
   },
-  title: {
+  message: {
     type: DataTypes.STRING,
-  },
-  content: {
-    type: DataTypes.TEXT('long'),
-  },
-  banner: {
-    type: DataTypes.STRING,
-  },
-  viewCount: {
-    type: DataTypes.INTEGER,
-  },
-  status: {
-    type: DataTypes.ENUM('published', 'draft'),
     allowNull: false,
+  },
+  parentId: {
+    type: DataTypes.TEXT('long'),
   },
 });
 
-User.hasMany(Post, {
+User.hasMany(Comment, {
   foreignKey: {
     allowNull: false,
   },
   onDelete: 'cascade',
 });
-Post.belongsTo(User);
+Comment.belongsTo(User);
 
-export default Post;
+Post.hasMany(Comment, {
+  foreignKey: {
+    allowNull: false,
+  },
+  onDelete: 'cascade',
+});
+Comment.belongsTo(Post);
+
+export default Comment;

@@ -2,7 +2,7 @@ import sequelize from '../db.js';
 import { Sequelize, DataTypes } from 'sequelize';
 import Post from './post.js';
 
-const Tag = sequelize.define('Tag', {
+const Tag = sequelize.define('tag', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,

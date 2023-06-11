@@ -3,6 +3,7 @@ import ApiError from '../utils/api-error.js';
 import { errorsObject } from '../utils/constants.js';
 import User from '../db/models/user.js';
 import Tag from '../db/models/tag.js';
+import LikeService from './like-service.js';
 
 export default class PostService {
   static async create({ title, content, banner, tags, status, creatorId }) {
@@ -12,7 +13,7 @@ export default class PostService {
       banner,
       viewCount: 0,
       status,
-      UserId: creatorId,
+      userId: creatorId,
     };
 
     const post = await Post.create(data);
@@ -40,17 +41,20 @@ export default class PostService {
         'content',
         'banner',
         'viewCount',
-        'updatedAt',
-        'UserId',
+        ['updatedAt', 'updatedDate'],
+        'userId',
       ],
       include: [
         {
           model: Tag,
-          as: 'Tags',
           attributes: ['id', 'name'],
+          through: {
+            attributes: [],
+          },
         },
       ],
     });
+
     return result;
   }
 
@@ -98,14 +102,16 @@ export default class PostService {
         'content',
         'banner',
         'viewCount',
-        'updatedAt',
-        'UserId',
+        ['updatedAt', 'updatedDate'],
+        'userId',
       ],
       include: [
         {
           model: Tag,
-          as: 'Tags',
           attributes: ['id', 'name'],
+          through: {
+            attributes: [],
+          },
         },
       ],
     });
@@ -120,38 +126,22 @@ export default class PostService {
     });
 
     const tags = await postRemove.getTags();
-    // console.log(a);
-    // const tags = await Tag.getAll({
-    //   where: {},
-    // });
-
-    // console.log(tags);
 
     for (const tag of tags) {
       if (tag.count > 1) {
         await tag.decrement('count');
       } else {
-        const b = await Tag.destroy({
+        await Tag.destroy({
           where: {
             id: tag.id,
           },
         });
-        console.log(b);
       }
     }
 
-    // const c = await Promise.all(
-    //   tags.forEach(async (tag) => {
-    //     console.log(tag.id);
-
-    //   })
-    // );
-
-    console.log(33333);
-
     const post = await Post.destroy({
       where: {
-        id: id,
+        id,
       },
     });
 
@@ -164,8 +154,8 @@ export default class PostService {
     try {
       const data = await Post.findAll({
         where: {
-          UserId: userId,
-          status: status,
+          userId,
+          status,
         },
         attributes: [
           'id',
@@ -173,14 +163,16 @@ export default class PostService {
           'content',
           'banner',
           'viewCount',
-          'updatedAt',
-          'UserId',
+          ['updatedAt', 'updatedDate'],
+          'userId',
         ],
         include: [
           {
             model: Tag,
-            as: 'Tags',
             attributes: ['id', 'name'],
+            through: {
+              attributes: [],
+            },
           },
         ],
       });
@@ -196,50 +188,69 @@ export default class PostService {
   static async getPosts({ limit, offset, sort, status }) {
     try {
       const data = await Post.findAll({
-        where: { status: status },
+        where: { status },
         order: [['updatedAt', sort]],
-        limit: limit,
-        offset: offset,
+        limit,
+        offset,
+        attributes: [
+          'id',
+          'title',
+          'content',
+          'banner',
+          'viewCount',
+          ['updatedAt', 'updatedDate'],
+          'userId',
+        ],
+        include: [
+          {
+            model: Tag,
+            attributes: ['id', 'name'],
+            through: {
+              attributes: [],
+            },
+          },
+        ],
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'email', 'name', 'avatarUrl'],
+          },
+        ],
       });
 
       if (data.length === 0) return [];
 
-      const posts = await Promise.all(
-        data.map(async (item) => {
-          const user = await User.findByPk(item.UserId);
-          if (user) {
-            return {
-              post: {
-                id: item.id,
-                title: item.title,
-                content: item.content,
-                banner: item.banner,
-                tags: JSON.parse(item.tags),
-                viewCount: item.viewCount,
-                updatedDate: item.updatedAt,
-                UserId: item.UserId,
-              },
-              user: {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                avatarUrl: user.avatarUrl,
-                bio: user.bio,
-                twitter: user.twitter,
-                mail: user.mail,
-                instagram: user.instagram,
-              },
-            };
-          } else {
-            return;
-          }
-        })
-      );
-      return posts;
+      return data;
     } catch (error) {
-      console.log(error);
       throw ApiError.NotFound(errorsObject.notFound);
     }
+  }
+
+  static async getDraft(id) {
+    const data = await Post.findByPk(id, {
+      attributes: [
+        'id',
+        'title',
+        'content',
+        'banner',
+        'viewCount',
+        ['updatedAt', 'updatedDate'],
+        'userId',
+      ],
+      include: [
+        {
+          model: Tag,
+          attributes: ['id', 'name'],
+          through: {
+            attributes: [],
+          },
+        },
+      ],
+    });
+
+    if (!data) throw ApiError.NotFound(errorsObject.notFound);
+
+    return data;
   }
 
   static async getPost(id) {
@@ -250,19 +261,30 @@ export default class PostService {
         'content',
         'banner',
         'viewCount',
-        'updatedAt',
-        'UserId',
+        ['updatedAt', 'updatedDate'],
+        'userId',
       ],
       include: [
         {
           model: Tag,
-          as: 'Tags',
           attributes: ['id', 'name'],
+          through: {
+            attributes: [],
+          },
+        },
+        {
+          model: User,
+          attributes: ['id', 'email', 'name', 'avatarUrl'],
         },
       ],
     });
 
     if (!data) throw ApiError.NotFound(errorsObject.notFound);
+
+    const isLiked = await LikeService.checkUserLike(id);
+    data.isLiked = isLiked;
+
+    data.countLikes = await data.countLikes();
 
     return data;
   }

@@ -10,10 +10,12 @@ const routes = {
   POSTS: '/posts',
   POST: '/post',
   POST_BY_ID: '/post/:id',
+  POST_DRAFT: '/post/draft/:id',
   REGISTER_PROVIDER: '/register-provider',
   USER_BY_EMAIL: '/user/email/:email',
   SAVE_IMAGE: '/save-image',
   REMOVE_IMAGES: '/remove-images',
+  LIKE: '/like',
 };
 
 const errorsObject = {

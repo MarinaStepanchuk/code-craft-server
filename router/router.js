@@ -8,6 +8,7 @@ import UserController from '../controllers/user-controller.js';
 import PostController from '../controllers/post-controller.js';
 import authMiddleware from '../middleware/auth-middleware.js';
 import multer from 'multer';
+import LikeController from '../controllers/like-controller.js';
 
 const router = Router();
 
@@ -42,6 +43,9 @@ router.post(
 router.post(routes.REMOVE_IMAGES, PostController.removeImages);
 router.get(routes.POSTS, PostController.getPosts);
 router.get(routes.POST_BY_ID, PostController.getPostById);
+router.get(routes.POST_DRAFT, PostController.getDraft);
 router.delete(routes.POST_BY_ID, PostController.deletePost);
+router.post(routes.LIKE, LikeController.likePost);
+router.delete(routes.LIKE, LikeController.removeLike);
 
 export default router;

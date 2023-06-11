@@ -6,8 +6,8 @@ export default class MailService {
       service: 'gmail',
       auth: {
         user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD
-      }
+        pass: process.env.SMTP_PASSWORD,
+      },
     });
 
     await transporter.sendMail({
@@ -15,15 +15,12 @@ export default class MailService {
       to,
       subject: 'Activating an account on the site code-craft.com',
       text: '',
-      html:
-        `
+      html: `
           <div>
             <h1>To activate your account, follow this link</h1>
             <a href="${link}">${link}</a>
           </div>
-        `
+        `,
     });
-
-    
   }
 }

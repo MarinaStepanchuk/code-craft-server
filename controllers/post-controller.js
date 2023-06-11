@@ -145,4 +145,13 @@ export default class PostController {
       next(error);
     }
   }
+
+  static async getDraft(req, res, next) {
+    try {
+      const result = await PostService.getDraft(req.params.id);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

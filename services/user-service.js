@@ -10,7 +10,7 @@ export default class UserService {
   static async register(email, password) {
     const candidate = await User.findOne({ where: { email: email } });
 
-    if(candidate) {
+    if (candidate) {
       throw ApiError.BadRequest(errorsObject.userIsExist);
     }
 
@@ -21,14 +21,21 @@ export default class UserService {
     const doc = {
       id,
       email,
-      activationLink: activationLink,
-      password: passwordHash
+      activationLink,
+      password: passwordHash,
     };
     const user = await User.create(doc);
-    
-    await mailService.sendActivationMail(email, `${process.env.API_URL}/api/activate/${activationLink}`);
 
-    const tokens = TokenService.generateTokens({email, passwordHash, id: user.id});
+    await mailService.sendActivationMail(
+      email,
+      `${process.env.API_URL}/api/activate/${activationLink}`
+    );
+
+    const tokens = TokenService.generateTokens({
+      email,
+      passwordHash,
+      id: user.id,
+    });
     await TokenService.saveToken(user.id, tokens.refreshToken);
 
     return {
@@ -40,26 +47,31 @@ export default class UserService {
       twitter: user.twitter,
       mail: user.mail,
       instagram: user.instagram,
-      ...tokens
+      ...tokens,
     };
   }
 
   static async activate(activationLink) {
-    const user = await User.findOne({ where: { activationLink: activationLink } });
+    const user = await User.findOne({
+      where: { activationLink },
+    });
 
     if (!user) {
       throw ApiError.BadRequest(errorsObject.incorrectLink);
     }
 
-    await User.update({ isActivated: true }, {
-      where: {
-        activationLink: activationLink
+    await User.update(
+      { isActivated: true },
+      {
+        where: {
+          activationLink,
+        },
       }
-    });
+    );
   }
 
   static async login(email, password) {
-    const user = await User.findOne({ where: { email: email } });
+    const user = await User.findOne({ where: { email } });
 
     if (!user) {
       throw ApiError.BadRequest(errorsObject.unregisteredUser);
@@ -70,13 +82,18 @@ export default class UserService {
     // }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
-    
+
     if (!isValidPassword) {
       throw ApiError.BadRequest(errorsObject.incorrectLogin);
     }
 
-    const tokens = TokenService.generateTokens({email, password: user.password, id: user.dataValues.id});
-    await TokenService.saveToken(user.dataValues.id, tokens.refreshToken);
+    const tokens = TokenService.generateTokens({
+      email,
+      password: user.password,
+      id: user.id,
+    });
+
+    await TokenService.saveToken(user.id, tokens.refreshToken);
 
     return {
       id: user.id,
@@ -87,7 +104,7 @@ export default class UserService {
       twitter: user.twitter,
       mail: user.mail,
       instagram: user.instagram,
-      ...tokens
+      ...tokens,
     };
   }
 
@@ -97,19 +114,23 @@ export default class UserService {
   }
 
   static async refresh(refreshToken) {
-    if(!refreshToken) {
+    if (!refreshToken) {
       throw ApiError.UnauthorizedError();
     }
 
     const user = TokenService.validateRefreshToken(refreshToken);
     const tokenBD = await TokenService.findToken(refreshToken);
 
-    if(!user || !tokenBD) {
-      throw ApiError.UnauthorizedError()
+    if (!user || !tokenBD) {
+      throw ApiError.UnauthorizedError();
     }
 
-    const tokens = TokenService.generateTokens({email: user.email, password: user.password, id: user.dataValues.id});
-    await TokenService.saveToken(user.dataValues.id, tokens.refreshToken);
+    const tokens = TokenService.generateTokens({
+      email: user.email,
+      password: user.password,
+      id: user.id,
+    });
+    await TokenService.saveToken(user.id, tokens.refreshToken);
     return {
       id: user.id,
       email: user.email,
@@ -119,87 +140,112 @@ export default class UserService {
       twitter: user.twitter,
       mail: user.mail,
       instagram: user.instagram,
-      ...tokens
+      ...tokens,
     };
   }
 
   static async getUser(id) {
-    const user = await User.findByPk(id)
+    const user = await User.findByPk(id, {
+      attributes: [
+        'id',
+        'email',
+        'name',
+        'bio',
+        'twitter',
+        'instagram',
+        'mail',
+      ],
+    });
 
     if (!user) {
       throw ApiError.NotFound(errorsObject.notFoundUser);
     }
 
-    const { password, createdAt, updatedAt, ...userData} = user.dataValues;
-    return { ...userData };
+    return user;
   }
 
   static async getUserByEmail(email) {
-    const user = await User.findOne(({ where: { email: email } }))
+    const user = await User.findOne(
+      { where: { email: email } },
+      {
+        attributes: [
+          'id',
+          'email',
+          'name',
+          'bio',
+          'twitter',
+          'instagram',
+          'mail',
+        ],
+      }
+    );
 
     if (!user) {
       throw ApiError.NotFound(errorsObject.notFoundUser);
     }
 
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      avatarUrl: user.avatarUrl,
-      bio: user.bio,
-      twitter: user.twitter,
-      mail: user.mail,
-      instagram: user.instagram
-    }
+    return user;
   }
 
   static async updateUser(user) {
-    const {id, name = null, avatarUrl = null, bio = null, twitter = null, mail = null, instagram  = null} = user;
-    const result = await User.update({
-      name: name,
-      avatarUrl: avatarUrl,
-      bio: bio,
-      twitter: twitter,
-      mail: mail,
-      instagram: instagram
-    }, {
-      where: {
-        id: id
+    const {
+      id,
+      name = null,
+      avatarUrl = null,
+      bio = null,
+      twitter = null,
+      mail = null,
+      instagram = null,
+    } = user;
+    const result = await User.update(
+      {
+        name,
+        avatarUrl,
+        bio,
+        twitter,
+        mail,
+        instagram,
+      },
+      {
+        where: {
+          id: id,
+        },
       }
-    })
+    );
 
-    if(!result) {
+    if (!result) {
       throw ApiError.BadRequest(errorsObject.incorrectData);
     }
 
-    const updateUser = await User.findByPk(id)
+    const updateUser = await User.findByPk(id, {
+      attributes: [
+        'id',
+        'email',
+        'name',
+        'bio',
+        'twitter',
+        'instagram',
+        'mail',
+      ],
+    });
 
-    return {
-      id: updateUser.id,
-      email: updateUser.email,
-      name: updateUser.name,
-      avatarUrl: updateUser.avatarUrl,
-      bio: updateUser.bio,
-      twitter: updateUser.twitter,
-      mail: updateUser.mail,
-      instagram: updateUser.instagram
-    }
+    return updateUser;
   }
 
   static async registerWithProvider(id, email, avatarUrl, provider) {
-    const candidate = await User.findOne(({ where: { email: email } }));
-    if(!candidate) {
+    const candidate = await User.findOne({ where: { email } });
+    if (!candidate) {
       const idUser = provider === 'google' ? `google${id}` : `github${id}`;
       const doc = {
         id: idUser,
         email,
         avatarUrl,
         password: provider,
-        isActivated: true
+        isActivated: true,
       };
 
       const user = await User.create(doc);
-      
+
       return {
         id: user.id,
         email: user.email,
@@ -208,8 +254,8 @@ export default class UserService {
         bio: user.bio | null,
         twitter: user.twitter | null,
         mail: user.mail | null,
-        instagram: user.instagram | null
-      }
+        instagram: user.instagram | null,
+      };
     }
 
     return {
@@ -220,7 +266,7 @@ export default class UserService {
       bio: candidate.bio | null,
       twitter: candidate.twitter | null,
       mail: candidate.mail | null,
-      instagram: candidate.instagram | null
-    }
+      instagram: candidate.instagram | null,
+    };
   }
 }

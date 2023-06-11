@@ -1,21 +1,21 @@
 import sequelize from '../db.js';
 import { DataTypes } from 'sequelize';
 
-const User = sequelize.define("User", {
+const User = sequelize.define('user', {
   id: {
     type: DataTypes.STRING,
     primaryKey: true,
     allowNull: false,
-    unique: true
+    unique: true,
   },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
+    unique: true,
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   name: {
     type: DataTypes.STRING(50),
@@ -41,7 +41,7 @@ const User = sequelize.define("User", {
   },
   activationLink: {
     type: DataTypes.STRING,
-  }
+  },
 });
 
 export default User;

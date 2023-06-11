@@ -1,26 +1,22 @@
 import sequelize from '../db.js';
 import { DataTypes } from 'sequelize';
-import User from './user.js';
 
-const Token = sequelize.define('token', {
+const Subscriptions = sequelize.define('subscriptions', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
     allowNull: false,
+    unique: true,
   },
-  refreshToken: {
-    type: DataTypes.TEXT('long'),
+  author: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  subscriber: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
 });
 
-User.hasOne(Token, {
-  foreignKey: {
-    allowNull: false,
-  },
-  onDelete: 'cascade',
-});
-Token.belongsTo(User);
-
-export default Token;
+export default Subscriptions;

@@ -3,6 +3,9 @@ import { validationResult } from 'express-validator';
 import ApiError from '../utils/api-error.js';
 import { errorsObject } from '../utils/constants.js';
 import FirebaseService from '../services/firebase-service.js';
+import Like from '../db/models/like.js';
+import Comment from '../db/models/comment.js';
+import Subscriptions from '../db/models/subscribers.js';
 
 export default class UserController {
   static async register(req, res, next) {
