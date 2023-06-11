@@ -282,10 +282,14 @@ export default class PostService {
     if (!data) throw ApiError.NotFound(errorsObject.notFound);
 
     const isLiked = await LikeService.checkUserLike(id);
-    data.isLiked = isLiked;
+    const countLikes = await data.countLikes();
 
-    data.countLikes = await data.countLikes();
+    return { ...data.dataValues, isLiked, countLikes };
+  }
 
-    return data;
+  static async visitPost(id) {
+    const post = await Post.findOne({ where: { id } });
+    await post.increment('viewCount');
+    return {};
   }
 }

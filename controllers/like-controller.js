@@ -5,6 +5,7 @@ export default class LikeController {
     try {
       const { userId, postId } = req.query;
       const result = await LikeService.addLike(userId, postId);
+      console.log(result);
       return res.json(result);
     } catch (error) {
       next(error);
@@ -12,7 +13,7 @@ export default class LikeController {
   }
   static async removeLike(req, res, next) {
     try {
-      const { userId, postId } = req.query;
+      const { userId, postId } = req.body;
       const result = await LikeService.removeLike(userId, postId);
       return res.json(result);
     } catch (error) {

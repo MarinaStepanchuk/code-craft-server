@@ -3,14 +3,14 @@ import Like from '../db/models/like.js';
 export default class LikeService {
   static async addLike(userId, postId) {
     await Like.create({ userId, postId });
-    return null;
+    return {};
   }
 
   static async removeLike(userId, postId) {
     await Like.destroy({
       where: { userId, postId },
     });
-    return null;
+    return {};
   }
 
   static async checkUserLike(postId) {

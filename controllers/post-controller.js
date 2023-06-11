@@ -140,8 +140,10 @@ export default class PostController {
   static async getPostById(req, res, next) {
     try {
       const result = await PostService.getPost(req.params.id);
+      console.log(result);
       res.json(result);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -149,6 +151,15 @@ export default class PostController {
   static async getDraft(req, res, next) {
     try {
       const result = await PostService.getDraft(req.params.id);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async visitPost(req, res, next) {
+    try {
+      const result = await PostService.visitPost(req.params.id);
       res.json(result);
     } catch (error) {
       next(error);

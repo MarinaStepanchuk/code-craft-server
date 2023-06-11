@@ -9,6 +9,7 @@ const routes = {
   USER_UPDATE: '/user',
   POSTS: '/posts',
   POST: '/post',
+  VISIT: '/post/visit/:id',
   POST_BY_ID: '/post/:id',
   POST_DRAFT: '/post/draft/:id',
   REGISTER_PROVIDER: '/register-provider',
