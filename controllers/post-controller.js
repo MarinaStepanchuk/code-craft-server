@@ -165,4 +165,14 @@ export default class PostController {
       next(error);
     }
   }
+
+  static async getBookmarks(req, res, next) {
+    try {
+      const { userId } = req.query;
+      const result = await PostService.getBookmarks(userId);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

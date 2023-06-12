@@ -49,5 +49,6 @@ router.delete(routes.POST_BY_ID, PostController.deletePost);
 router.post(routes.LIKE, LikeController.likePost);
 router.delete(routes.LIKE, LikeController.removeLike);
 router.put(routes.BOOKMARKS, UserController.updateBookmarks);
+router.get(routes.BOOKMARKS, PostController.getBookmarks);
 
 export default router;

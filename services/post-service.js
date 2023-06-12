@@ -292,4 +292,53 @@ export default class PostService {
     await post.increment('viewCount');
     return {};
   }
+
+  static async getBookmarks(userId) {
+    const bookmarks = await User.findByPk(userId, {
+      attributes: ['bookmarks'],
+    });
+
+    if (!bookmarks) {
+      return [];
+    }
+
+    const posts = await Promise.all(
+      bookmarks.join(' ').map(
+        async (postId) =>
+          await Post.findOne({
+            where: {
+              id: postId,
+            },
+            attributes: [
+              'id',
+              'title',
+              'content',
+              'banner',
+              'viewCount',
+              ['updatedAt', 'updatedDate'],
+              'userId',
+            ],
+            include: [
+              {
+                model: Tag,
+                attributes: ['id', 'name'],
+                through: {
+                  attributes: [],
+                },
+              },
+            ],
+            include: [
+              {
+                model: User,
+                attributes: ['id', 'email', 'name', 'avatarUrl'],
+              },
+            ],
+          })
+      )
+    );
+
+    if (posts.length === 0) return [];
+
+    return posts;
+  }
 }
