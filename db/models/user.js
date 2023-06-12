@@ -42,6 +42,9 @@ const User = sequelize.define('user', {
   activationLink: {
     type: DataTypes.STRING,
   },
+  bookmarks: {
+    type: DataTypes.STRING,
+  },
 });
 
 export default User;

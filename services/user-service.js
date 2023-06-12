@@ -47,6 +47,7 @@ export default class UserService {
       twitter: user.twitter,
       mail: user.mail,
       instagram: user.instagram,
+      bookmarks: user.bookmarks,
       ...tokens,
     };
   }
@@ -104,6 +105,7 @@ export default class UserService {
       twitter: user.twitter,
       mail: user.mail,
       instagram: user.instagram,
+      bookmarks: user.bookmarks,
       ...tokens,
     };
   }
@@ -140,6 +142,7 @@ export default class UserService {
       twitter: user.twitter,
       mail: user.mail,
       instagram: user.instagram,
+      bookmarks: user.bookmarks,
       ...tokens,
     };
   }
@@ -154,6 +157,7 @@ export default class UserService {
         'twitter',
         'instagram',
         'mail',
+        'bookmarks',
       ],
     });
 
@@ -176,6 +180,7 @@ export default class UserService {
           'twitter',
           'instagram',
           'mail',
+          'bookmarks',
         ],
       }
     );
@@ -226,6 +231,7 @@ export default class UserService {
         'twitter',
         'instagram',
         'mail',
+        'bookmarks',
       ],
     });
 
@@ -268,5 +274,37 @@ export default class UserService {
       mail: candidate.mail | null,
       instagram: candidate.instagram | null,
     };
+  }
+
+  static async updateBookmark({ bookmarks, userId }) {
+    const user = await User.update(
+      {
+        bookmarks,
+      },
+      {
+        where: {
+          id: userId,
+        },
+      }
+    );
+
+    if (!user[0]) {
+      throw ApiError.NotFound(errorsObject.notFoundUser);
+    }
+
+    const updateUser = await User.findByPk(userId, {
+      attributes: [
+        'id',
+        'email',
+        'name',
+        'bio',
+        'twitter',
+        'instagram',
+        'mail',
+        'bookmarks',
+      ],
+    });
+
+    return updateUser;
   }
 }

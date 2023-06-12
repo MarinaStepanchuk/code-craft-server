@@ -17,6 +17,7 @@ const routes = {
   SAVE_IMAGE: '/save-image',
   REMOVE_IMAGES: '/remove-images',
   LIKE: '/like',
+  BOOKMARKS: '/bookmarks',
 };
 
 const errorsObject = {
