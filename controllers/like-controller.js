@@ -5,7 +5,6 @@ export default class LikeController {
     try {
       const { userId, postId } = req.query;
       const result = await LikeService.addLike(userId, postId);
-      console.log(result);
       return res.json(result);
     } catch (error) {
       next(error);

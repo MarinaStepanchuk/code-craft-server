@@ -75,7 +75,6 @@ export default class PostController {
       const result = await PostService.create(doc);
       res.json(result);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -140,10 +139,8 @@ export default class PostController {
   static async getPostById(req, res, next) {
     try {
       const result = await PostService.getPost(req.params.id);
-      console.log(result);
       res.json(result);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }

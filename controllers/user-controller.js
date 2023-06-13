@@ -103,7 +103,6 @@ export default class UserController {
       );
       res.json(result);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -125,7 +124,6 @@ export default class UserController {
       });
       res.json(result);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -151,7 +149,6 @@ export default class UserController {
       const result = await UserService.updateBookmark({ bookmarks, userId });
       res.json(result);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }

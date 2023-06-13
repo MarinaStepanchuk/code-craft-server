@@ -12,11 +12,11 @@ const Comment = sequelize.define('comment', {
     unique: true,
   },
   message: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT('long'),
     allowNull: false,
   },
   parentId: {
-    type: DataTypes.TEXT('long'),
+    type: DataTypes.INTEGER,
   },
 });
 

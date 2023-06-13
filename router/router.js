@@ -1,14 +1,12 @@
 import { Router } from 'express';
 import { routes } from '../utils/constants.js';
-import {
-  registerValidation,
-  postCreateValidation,
-} from '../utils/validations.js';
+import { registerValidation } from '../utils/validations.js';
 import UserController from '../controllers/user-controller.js';
 import PostController from '../controllers/post-controller.js';
 import authMiddleware from '../middleware/auth-middleware.js';
 import multer from 'multer';
 import LikeController from '../controllers/like-controller.js';
+import CommentController from '../controllers/comment-controller.js';
 
 const router = Router();
 
@@ -28,6 +26,7 @@ router.put(
   upload.single('avatar'),
   UserController.updateUser
 );
+
 router.post(routes.POST, upload.single('banner'), PostController.createPost);
 router.post(
   routes.SAVE_IMAGE,
@@ -46,9 +45,16 @@ router.get(routes.POST_BY_ID, PostController.getPostById);
 router.get(routes.POST_DRAFT, PostController.getDraft);
 router.put(routes.VISIT, PostController.visitPost);
 router.delete(routes.POST_BY_ID, PostController.deletePost);
+
 router.post(routes.LIKE, LikeController.likePost);
 router.delete(routes.LIKE, LikeController.removeLike);
+
 router.put(routes.BOOKMARKS, UserController.updateBookmarks);
 router.get(routes.BOOKMARKS, PostController.getBookmarks);
+
+router.get(routes.COMMENTS, CommentController.getComments);
+router.post(routes.COMMENT, CommentController.createComment);
+router.put(`${routes.COMMENT}/:id`, CommentController.updateComment);
+router.delete(`${routes.COMMENT}/:id`, CommentController.deleteComment);
 
 export default router;

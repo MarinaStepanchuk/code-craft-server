@@ -18,6 +18,8 @@ const routes = {
   REMOVE_IMAGES: '/remove-images',
   LIKE: '/like',
   BOOKMARKS: '/bookmarks',
+  COMMENTS: '/comments',
+  COMMENT: '/comment',
 };
 
 const errorsObject = {
