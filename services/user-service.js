@@ -2,7 +2,6 @@ import User from '../db/models/user.js';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import mailService from './mail-service.js';
-import TokenService from './token-service.js';
 import ApiError from '../utils/api-error.js';
 import { errorsObject } from '../utils/constants.js';
 
@@ -31,13 +30,6 @@ export default class UserService {
       `${process.env.API_URL}/api/activate/${activationLink}`
     );
 
-    const tokens = TokenService.generateTokens({
-      email,
-      passwordHash,
-      id: user.id,
-    });
-    await TokenService.saveToken(user.id, tokens.refreshToken);
-
     return {
       id: user.id,
       email: user.email,
@@ -48,7 +40,6 @@ export default class UserService {
       mail: user.mail,
       instagram: user.instagram,
       bookmarks: user.bookmarks,
-      ...tokens,
     };
   }
 
@@ -88,14 +79,6 @@ export default class UserService {
       throw ApiError.BadRequest(errorsObject.incorrectLogin);
     }
 
-    const tokens = TokenService.generateTokens({
-      email,
-      password: user.password,
-      id: user.id,
-    });
-
-    await TokenService.saveToken(user.id, tokens.refreshToken);
-
     return {
       id: user.id,
       email: user.email,
@@ -106,44 +89,6 @@ export default class UserService {
       mail: user.mail,
       instagram: user.instagram,
       bookmarks: user.bookmarks,
-      ...tokens,
-    };
-  }
-
-  static async logout(refreshToken) {
-    const token = await TokenService.removeToken(refreshToken);
-    return token;
-  }
-
-  static async refresh(refreshToken) {
-    if (!refreshToken) {
-      throw ApiError.UnauthorizedError();
-    }
-
-    const user = TokenService.validateRefreshToken(refreshToken);
-    const tokenBD = await TokenService.findToken(refreshToken);
-
-    if (!user || !tokenBD) {
-      throw ApiError.UnauthorizedError();
-    }
-
-    const tokens = TokenService.generateTokens({
-      email: user.email,
-      password: user.password,
-      id: user.id,
-    });
-    await TokenService.saveToken(user.id, tokens.refreshToken);
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      avatarUrl: user.avatarUrl,
-      bio: user.bio,
-      twitter: user.twitter,
-      mail: user.mail,
-      instagram: user.instagram,
-      bookmarks: user.bookmarks,
-      ...tokens,
     };
   }
 
