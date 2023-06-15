@@ -112,13 +112,24 @@ export default class PostController {
   static async getPosts(req, res, next) {
     try {
       if (req.query.userId) {
-        const { userId, status = 'published' } = req.query;
+        const {
+          userId,
+          status = 'published',
+          limit = 10,
+          offset = 0,
+        } = req.query;
         if (status === 'published') {
-          const result = await PostService.getUserPublishedPosts({ userId });
+          const result = await PostService.getUserPublishedPosts({
+            userId,
+            limit: Number(limit),
+            offset: Number(offset),
+          });
           res.json(result);
         } else {
           const result = await PostService.getUserDrafts({
             userId,
+            limit: Number(limit),
+            offset: Number(offset),
           });
           res.json(result);
         }

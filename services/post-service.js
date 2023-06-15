@@ -150,7 +150,7 @@ export default class PostService {
     return true;
   }
 
-  static async getUserPublishedPosts({ userId }) {
+  static async getUserPublishedPosts({ userId, limit, offset }) {
     try {
       const data = await Post.findAll({
         where: {
@@ -158,6 +158,8 @@ export default class PostService {
           status: 'published',
         },
         order: [['createdAt', 'DESC']],
+        limit,
+        offset,
         attributes: [
           'id',
           'title',
@@ -181,13 +183,17 @@ export default class PostService {
 
       if (data.length === 0) return [];
 
-      return data;
+      return {
+        posts: [...data],
+        page: offset,
+        amountPages: Math.ceil(data.length / limit),
+      };
     } catch (error) {
       throw ApiError.NotFound(errorsObject.notFound);
     }
   }
 
-  static async getUserDrafts({ userId }) {
+  static async getUserDrafts({ userId, limit, offset }) {
     try {
       const data = await Post.findAll({
         where: {
@@ -195,6 +201,8 @@ export default class PostService {
           status: 'draft',
         },
         order: [['updatedAt', 'DESC']],
+        limit,
+        offset,
         attributes: [
           'id',
           'title',
@@ -218,7 +226,11 @@ export default class PostService {
 
       if (data.length === 0) return [];
 
-      return data;
+      return {
+        posts: [...data],
+        page: offset,
+        amountPages: Math.ceil(data.length / limit),
+      };
     } catch (error) {
       throw ApiError.NotFound(errorsObject.notFound);
     }

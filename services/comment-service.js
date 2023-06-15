@@ -148,8 +148,6 @@ export default class CommentService {
       ],
     });
 
-    console.log(result);
-
     if (result.length === 0) return [];
 
     return {
