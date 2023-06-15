@@ -113,8 +113,15 @@ export default class PostController {
     try {
       if (req.query.userId) {
         const { userId, status = 'published' } = req.query;
-        const result = await PostService.getUserPosts({ userId, status });
-        res.json(result);
+        if (status === 'published') {
+          const result = await PostService.getUserPublishedPosts({ userId });
+          res.json(result);
+        } else {
+          const result = await PostService.getUserDrafts({
+            userId,
+          });
+          res.json(result);
+        }
       }
 
       const {
@@ -125,8 +132,8 @@ export default class PostController {
       } = req.query;
 
       const result = await PostService.getPosts({
-        limit,
-        offset,
+        limit: Number(limit),
+        offset: Number(offset),
         sort,
         status,
       });

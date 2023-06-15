@@ -18,6 +18,7 @@ const routes = {
   BOOKMARKS: '/bookmarks',
   COMMENTS: '/comments',
   COMMENT: '/comment',
+  RESPONSES: '/responses',
 };
 
 const errorsObject = {

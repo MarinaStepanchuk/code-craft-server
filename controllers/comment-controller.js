@@ -4,7 +4,6 @@ export default class CommentController {
   static async createComment(req, res, next) {
     try {
       const { userId, postId, message, parentId } = req.body;
-      console.log(userId, postId, message, parentId);
       const result = await CommentService.create({
         userId,
         postId,
@@ -44,7 +43,21 @@ export default class CommentController {
       const result = await CommentService.getAllComments(postId);
       res.json(result);
     } catch (error) {
-      console.log(error);
+      next(error);
+    }
+  }
+
+  static async getResponses(req, res, next) {
+    try {
+      const { limit = 10, offset = 0, userId } = req.query;
+      const result = await CommentService.getResponses({
+        userId,
+        limit: Number(limit),
+        offset: Number(offset),
+      });
+      res.json(result);
+    } catch (error) {
+      // console.log(error);
       next(error);
     }
   }

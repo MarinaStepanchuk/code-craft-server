@@ -54,4 +54,6 @@ router.post(routes.COMMENT, CommentController.createComment);
 router.put(`${routes.COMMENT}/:id`, CommentController.updateComment);
 router.delete(`${routes.COMMENT}/:id`, CommentController.deleteComment);
 
+router.get(routes.RESPONSES, CommentController.getResponses);
+
 export default router;

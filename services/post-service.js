@@ -150,13 +150,14 @@ export default class PostService {
     return true;
   }
 
-  static async getUserPosts({ userId, status }) {
+  static async getUserPublishedPosts({ userId }) {
     try {
       const data = await Post.findAll({
         where: {
           userId,
-          status,
+          status: 'published',
         },
+        order: [['createdAt', 'DESC']],
         attributes: [
           'id',
           'title',
@@ -164,6 +165,7 @@ export default class PostService {
           'banner',
           'viewCount',
           ['updatedAt', 'updatedDate'],
+          ['createdAt', 'createdDate'],
           'userId',
         ],
         include: [
@@ -185,11 +187,48 @@ export default class PostService {
     }
   }
 
-  static async getPosts({ limit, offset, sort, status }) {
+  static async getUserDrafts({ userId }) {
     try {
       const data = await Post.findAll({
-        where: { status },
-        order: [['updatedAt', sort]],
+        where: {
+          userId,
+          status: 'draft',
+        },
+        order: [['updatedAt', 'DESC']],
+        attributes: [
+          'id',
+          'title',
+          'content',
+          'banner',
+          'viewCount',
+          ['updatedAt', 'updatedDate'],
+          ['createdAt', 'createdDate'],
+          'userId',
+        ],
+        include: [
+          {
+            model: Tag,
+            attributes: ['id', 'name'],
+            through: {
+              attributes: [],
+            },
+          },
+        ],
+      });
+
+      if (data.length === 0) return [];
+
+      return data;
+    } catch (error) {
+      throw ApiError.NotFound(errorsObject.notFound);
+    }
+  }
+
+  static async getPosts({ limit, offset, sort }) {
+    try {
+      const data = await Post.findAll({
+        where: { status: 'published' },
+        order: [['createdAt', sort]],
         limit,
         offset,
         attributes: [
@@ -199,6 +238,7 @@ export default class PostService {
           'banner',
           'viewCount',
           ['updatedAt', 'updatedDate'],
+          ['createdAt', 'createdDate'],
           'userId',
         ],
         include: [
@@ -235,6 +275,7 @@ export default class PostService {
         'banner',
         'viewCount',
         ['updatedAt', 'updatedDate'],
+        ['createdAt', 'createdDate'],
         'userId',
       ],
       include: [
@@ -262,6 +303,7 @@ export default class PostService {
         'banner',
         'viewCount',
         ['updatedAt', 'updatedDate'],
+        ['createdAt', 'createdDate'],
         'userId',
       ],
       include: [
@@ -316,6 +358,7 @@ export default class PostService {
               'banner',
               'viewCount',
               ['updatedAt', 'updatedDate'],
+              ['createdAt', 'createdDate'],
               'userId',
             ],
             include: [

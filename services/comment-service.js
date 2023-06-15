@@ -2,6 +2,7 @@ import ApiError from '../utils/api-error.js';
 import { errorsObject } from '../utils/constants.js';
 import User from '../db/models/user.js';
 import Comment from '../db/models/comment.js';
+import Post from '../db/models/post.js';
 
 export default class CommentService {
   static async create({ userId, postId, message, parentId }) {
@@ -67,6 +68,24 @@ export default class CommentService {
 
     if (!comment) throw ApiError.NotFound(errorsObject.notFound);
 
+    const children = await Comment.findAll({
+      where: {
+        parentId: id,
+      },
+    });
+
+    if (children & (children.length > 0)) {
+      await Promise.allSettled(
+        children.forEach(async (element) => {
+          await Comment.destroy({
+            where: {
+              id: element.id,
+            },
+          });
+        })
+      );
+    }
+
     return {};
   }
 
@@ -76,7 +95,14 @@ export default class CommentService {
         where: {
           postId,
         },
-        attributes: ['id', 'message', 'parentId', ['createdAt', 'createdDate']],
+        attributes: [
+          'id',
+          'message',
+          'parentId',
+          'postId',
+          ['createdAt', 'createdDate'],
+          ['updatedAt', 'updatedDate'],
+        ],
         include: [
           {
             model: User,
@@ -91,5 +117,45 @@ export default class CommentService {
     } catch (error) {
       throw ApiError.NotFound(errorsObject.notFound);
     }
+  }
+
+  static async getResponses({ userId, limit, offset }) {
+    console.log(userId);
+    const result = await Comment.findAll({
+      where: {
+        userId,
+      },
+      order: [['createdAt', 'DESC']],
+      limit,
+      offset,
+      attributes: [
+        'id',
+        'message',
+        'parentId',
+        'postId',
+        ['createdAt', 'createdDate'],
+        ['updatedAt', 'updatedDate'],
+      ],
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'name', 'email', 'avatarUrl'],
+        },
+        {
+          model: Post,
+          attributes: ['banner'],
+        },
+      ],
+    });
+
+    console.log(result);
+
+    if (result.length === 0) return [];
+
+    return {
+      comments: [...result],
+      page: offset,
+      amountPages: Math.ceil(result.length / limit),
+    };
   }
 }
