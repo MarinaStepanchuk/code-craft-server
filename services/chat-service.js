@@ -3,7 +3,7 @@ export default class ChatService {
     const options = {
       method: 'POST',
       headers: {
-        Authorization: `Bearer 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`,
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
