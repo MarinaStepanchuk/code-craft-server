@@ -19,6 +19,7 @@ const routes = {
   COMMENTS: '/comments',
   COMMENT: '/comment',
   RESPONSES: '/responses',
+  CHAT: '/chat',
 };
 
 const errorsObject = {

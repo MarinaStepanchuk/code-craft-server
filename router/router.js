@@ -6,6 +6,7 @@ import PostController from '../controllers/post-controller.js';
 import multer from 'multer';
 import LikeController from '../controllers/like-controller.js';
 import CommentController from '../controllers/comment-controller.js';
+import ChatController from '../controllers/chat-controller.js';
 
 const router = Router();
 
@@ -55,5 +56,7 @@ router.put(`${routes.COMMENT}/:id`, CommentController.updateComment);
 router.delete(`${routes.COMMENT}/:id`, CommentController.deleteComment);
 
 router.get(routes.RESPONSES, CommentController.getResponses);
+
+router.post(routes.CHAT, ChatController.connect);
 
 export default router;

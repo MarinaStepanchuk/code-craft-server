@@ -8,6 +8,7 @@ import * as dotenv from 'dotenv';
 import { initializeApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
 import firebaseConfig from './firebase.config.js';
+import { Configuration, OpenAIApi } from 'openai';
 
 dotenv.config();
 
@@ -16,6 +17,12 @@ const port = 3001;
 
 initializeApp(firebaseConfig);
 export const storage = getStorage();
+
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+export const openai = new OpenAIApi(configuration);
 
 app.use(express.json());
 app.use(cookieParser());
