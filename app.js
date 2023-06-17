@@ -18,12 +18,6 @@ const port = 3001;
 initializeApp(firebaseConfig);
 export const storage = getStorage();
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-export const openai = new OpenAIApi(configuration);
-
 app.use(express.json());
 app.use(cookieParser());
 app.use(
