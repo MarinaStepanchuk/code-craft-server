@@ -1,9 +1,11 @@
 import Post from '../db/models/post.js';
+import Like from '../db/models/like.js';
 import ApiError from '../utils/api-error.js';
 import { errorsObject } from '../utils/constants.js';
 import User from '../db/models/user.js';
 import Tag from '../db/models/tag.js';
 import LikeService from './like-service.js';
+import sequelize from '../db/db.js';
 
 export default class PostService {
   static async create({ title, content, banner, tags, status, creatorId }) {
@@ -187,18 +189,28 @@ export default class PostService {
         ],
       });
 
-      if (rows.length === 0)
+      const postsWithLikes = await Promise.all(
+        rows.map(async (item) => {
+          const likesCount = await item.countLikes();
+          return {
+            ...item.dataValues,
+            likesCount,
+          };
+        })
+      );
+
+      if (!postsWithLikes.length)
         return {
           posts: [],
-          page: 1,
-          amountPages: 1,
+          page: 0,
+          amountPages: 0,
           amountPosts: 0,
         };
 
       return {
-        posts: [...rows],
+        posts: [...postsWithLikes],
         page: offset,
-        amountPages: Math.ceil(count / limit),
+        amountPages: Math.ceil(count / limit) - 1,
         amountPosts: count,
       };
     } catch (error) {
@@ -246,15 +258,15 @@ export default class PostService {
       if (rows.length === 0)
         return {
           posts: [],
-          page: 1,
-          amountPages: 1,
+          page: 0,
+          amountPages: 0,
           amountPosts: 0,
         };
 
       return {
         posts: [...rows],
         page: offset,
-        amountPages: Math.ceil(count / limit),
+        amountPages: Math.ceil(count / limit) - 1,
         amountPosts: count,
       };
     } catch (error) {
@@ -304,15 +316,15 @@ export default class PostService {
       if (rows.length === 0)
         return {
           posts: [],
-          page: 1,
-          amountPages: 1,
+          page: 0,
+          amountPages: 0,
           amountPosts: 0,
         };
 
       return {
         posts: [...rows],
         page: offset,
-        amountPages: Math.ceil(count / limit),
+        amountPages: Math.ceil(count / limit) - 1,
         amountPosts: count,
       };
     } catch (error) {

@@ -20,6 +20,8 @@ const routes = {
   COMMENT: '/comment',
   RESPONSES: '/responses',
   CHAT: '/chat',
+  SUBSCRIBERS: '/subscribers',
+  SUBSCRIBE: '/subscribe',
 };
 
 const errorsObject = {

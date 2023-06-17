@@ -7,6 +7,7 @@ import multer from 'multer';
 import LikeController from '../controllers/like-controller.js';
 import CommentController from '../controllers/comment-controller.js';
 import ChatController from '../controllers/chat-controller.js';
+import SubscribersController from '../controllers/subscribers-controller.js';
 
 const router = Router();
 
@@ -58,5 +59,10 @@ router.delete(`${routes.COMMENT}/:id`, CommentController.deleteComment);
 router.get(routes.RESPONSES, CommentController.getResponses);
 
 router.post(routes.CHAT, ChatController.connect);
+
+router.post(routes.SUBSCRIBERS, SubscribersController.subscribe);
+router.delete(routes.SUBSCRIBERS, SubscribersController.unsubscribe);
+router.get(routes.SUBSCRIBERS, SubscribersController.getSubscribers);
+router.get(routes.SUBSCRIBE, SubscribersController.checkSubscribe);
 
 export default router;

@@ -1,5 +1,6 @@
 import User from '../db/models/user.js';
 import Post from '../db/models/post.js';
+import Subscribers from '../db/models/subscribers.js';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import mailService from './mail-service.js';
@@ -104,6 +105,7 @@ export default class UserService {
         'instagram',
         'mail',
         'bookmarks',
+        'avatarUrl',
       ],
     });
 
@@ -114,6 +116,8 @@ export default class UserService {
       },
     });
 
+    const countFollowers = await Subscribers.count({ where: { author: id } });
+
     if (!user) {
       throw ApiError.NotFound(errorsObject.notFoundUser);
     }
@@ -121,6 +125,7 @@ export default class UserService {
     return {
       ...user.dataValues,
       countPosts: countPosts || 0,
+      countFollowers: countFollowers || 0,
     };
   }
 

@@ -1,6 +1,4 @@
 import PostService from '../services/post-service.js';
-import { errorsObject } from '../utils/constants.js';
-import ApiError from '../utils/api-error.js';
 import FirebaseService from '../services/firebase-service.js';
 import sharp from 'sharp';
 
@@ -119,11 +117,10 @@ export default class PostController {
           offset = 0,
         } = req.query;
         if (status === 'published') {
-          console.log(userId, 1111111);
           const result = await PostService.getUserPublishedPosts({
             userId,
             limit: Number(limit),
-            offset: Number(offset),
+            offset: Number(offset) || 0,
           });
           res.json(result);
         } else {

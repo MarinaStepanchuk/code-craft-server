@@ -16,10 +16,6 @@ export default class LikeService {
   static async checkUserLike(postId) {
     const isLiked = await Like.findOne({ where: { postId } });
 
-    if (isLiked) {
-      return true;
-    }
-
-    return false;
+    return !!isLiked;
   }
 }
