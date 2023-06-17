@@ -1,4 +1,5 @@
 import User from '../db/models/user.js';
+import Post from '../db/models/post.js';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import mailService from './mail-service.js';
@@ -106,11 +107,21 @@ export default class UserService {
       ],
     });
 
+    const countPosts = await Post.count({
+      where: {
+        userId: id,
+        status: 'published',
+      },
+    });
+
     if (!user) {
       throw ApiError.NotFound(errorsObject.notFoundUser);
     }
 
-    return user;
+    return {
+      ...user.dataValues,
+      countPosts: countPosts || 0,
+    };
   }
 
   static async getUserByEmail(email) {

@@ -120,7 +120,6 @@ export default class CommentService {
   }
 
   static async getResponses({ userId, limit, offset }) {
-    console.log(userId);
     const result = await Comment.findAll({
       where: {
         userId,

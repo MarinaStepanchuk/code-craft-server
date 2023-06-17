@@ -12,7 +12,6 @@ export default class CommentController {
       });
       res.json(result);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -57,7 +56,6 @@ export default class CommentController {
       });
       res.json(result);
     } catch (error) {
-      // console.log(error);
       next(error);
     }
   }

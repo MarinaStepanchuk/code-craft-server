@@ -119,6 +119,7 @@ export default class PostController {
           offset = 0,
         } = req.query;
         if (status === 'published') {
+          console.log(userId, 1111111);
           const result = await PostService.getUserPublishedPosts({
             userId,
             limit: Number(limit),

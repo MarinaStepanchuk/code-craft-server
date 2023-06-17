@@ -152,14 +152,20 @@ export default class PostService {
 
   static async getUserPublishedPosts({ userId, limit, offset }) {
     try {
-      const data = await Post.findAll({
+      const count = await Post.count({
         where: {
-          userId,
+          userId: userId,
           status: 'published',
         },
-        order: [['createdAt', 'DESC']],
+      });
+      const rows = await Post.findAll({
+        where: {
+          userId: userId,
+          status: 'published',
+        },
+        order: [['updatedAt', 'DESC']],
         limit,
-        offset,
+        offset: offset ? limit + offset - 1 : offset,
         attributes: [
           'id',
           'title',
@@ -181,12 +187,19 @@ export default class PostService {
         ],
       });
 
-      if (data.length === 0) return [];
+      if (rows.length === 0)
+        return {
+          posts: [],
+          page: 1,
+          amountPages: 1,
+          amountPosts: 0,
+        };
 
       return {
-        posts: [...data],
+        posts: [...rows],
         page: offset,
-        amountPages: Math.ceil(data.length / limit),
+        amountPages: Math.ceil(count / limit),
+        amountPosts: count,
       };
     } catch (error) {
       throw ApiError.NotFound(errorsObject.notFound);
@@ -195,14 +208,20 @@ export default class PostService {
 
   static async getUserDrafts({ userId, limit, offset }) {
     try {
-      const data = await Post.findAll({
+      const count = await Post.count({
+        where: {
+          userId: userId,
+          status: 'draft',
+        },
+      });
+      const rows = await Post.findAll({
         where: {
           userId,
           status: 'draft',
         },
         order: [['updatedAt', 'DESC']],
         limit,
-        offset,
+        offset: offset ? limit + offset - 1 : offset,
         attributes: [
           'id',
           'title',
@@ -224,12 +243,19 @@ export default class PostService {
         ],
       });
 
-      if (data.length === 0) return [];
+      if (rows.length === 0)
+        return {
+          posts: [],
+          page: 1,
+          amountPages: 1,
+          amountPosts: 0,
+        };
 
       return {
-        posts: [...data],
+        posts: [...rows],
         page: offset,
-        amountPages: Math.ceil(data.length / limit),
+        amountPages: Math.ceil(count / limit),
+        amountPosts: count,
       };
     } catch (error) {
       throw ApiError.NotFound(errorsObject.notFound);
@@ -238,11 +264,16 @@ export default class PostService {
 
   static async getPosts({ limit, offset, sort }) {
     try {
-      const data = await Post.findAll({
+      const count = await Post.count({
+        where: {
+          status: 'published',
+        },
+      });
+      const rows = await Post.findAll({
         where: { status: 'published' },
         order: [['createdAt', sort]],
         limit,
-        offset,
+        offset: offset ? limit + offset - 1 : offset,
         attributes: [
           'id',
           'title',
@@ -270,9 +301,20 @@ export default class PostService {
         ],
       });
 
-      if (data.length === 0) return [];
+      if (rows.length === 0)
+        return {
+          posts: [],
+          page: 1,
+          amountPages: 1,
+          amountPosts: 0,
+        };
 
-      return data;
+      return {
+        posts: [...rows],
+        page: offset,
+        amountPages: Math.ceil(count / limit),
+        amountPosts: count,
+      };
     } catch (error) {
       throw ApiError.NotFound(errorsObject.notFound);
     }
