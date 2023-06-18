@@ -48,11 +48,11 @@ export default class CommentController {
 
   static async getResponses(req, res, next) {
     try {
-      const { limit = 10, offset = 0, userId } = req.query;
+      const { limit = 10, page = 0, userId } = req.query;
       const result = await CommentService.getResponses({
         userId,
         limit: Number(limit),
-        offset: Number(offset),
+        page: Number(page),
       });
       res.json(result);
     } catch (error) {

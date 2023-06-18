@@ -1,11 +1,10 @@
 import Post from '../db/models/post.js';
-import Like from '../db/models/like.js';
 import ApiError from '../utils/api-error.js';
 import { errorsObject } from '../utils/constants.js';
 import User from '../db/models/user.js';
 import Tag from '../db/models/tag.js';
 import LikeService from './like-service.js';
-import sequelize from '../db/db.js';
+import { Op } from 'sequelize';
 
 export default class PostService {
   static async create({ title, content, banner, tags, status, creatorId }) {
@@ -152,7 +151,7 @@ export default class PostService {
     return true;
   }
 
-  static async getUserPublishedPosts({ userId, limit, offset }) {
+  static async getUserPublishedPosts({ userId, limit, page }) {
     try {
       const count = await Post.count({
         where: {
@@ -167,7 +166,7 @@ export default class PostService {
         },
         order: [['updatedAt', 'DESC']],
         limit,
-        offset: offset ? limit + offset - 1 : offset,
+        offset: limit * page,
         attributes: [
           'id',
           'title',
@@ -209,7 +208,7 @@ export default class PostService {
 
       return {
         posts: [...postsWithLikes],
-        page: offset,
+        page,
         amountPages: Math.ceil(count / limit) - 1,
         amountPosts: count,
       };
@@ -218,7 +217,7 @@ export default class PostService {
     }
   }
 
-  static async getUserDrafts({ userId, limit, offset }) {
+  static async getUserDrafts({ userId, limit, page }) {
     try {
       const count = await Post.count({
         where: {
@@ -233,7 +232,7 @@ export default class PostService {
         },
         order: [['updatedAt', 'DESC']],
         limit,
-        offset: offset ? limit + offset - 1 : offset,
+        offset: limit * page,
         attributes: [
           'id',
           'title',
@@ -265,7 +264,7 @@ export default class PostService {
 
       return {
         posts: [...rows],
-        page: offset,
+        page,
         amountPages: Math.ceil(count / limit) - 1,
         amountPosts: count,
       };
@@ -274,7 +273,7 @@ export default class PostService {
     }
   }
 
-  static async getPosts({ limit, offset, sort }) {
+  static async getPosts({ limit, page, sort }) {
     try {
       const count = await Post.count({
         where: {
@@ -285,7 +284,7 @@ export default class PostService {
         where: { status: 'published' },
         order: [['createdAt', sort]],
         limit,
-        offset: offset ? limit + offset - 1 : offset,
+        offset: limit * page,
         attributes: [
           'id',
           'title',
@@ -323,7 +322,7 @@ export default class PostService {
 
       return {
         posts: [...rows],
-        page: offset,
+        page,
         amountPages: Math.ceil(count / limit) - 1,
         amountPosts: count,
       };
@@ -449,5 +448,74 @@ export default class PostService {
     if (posts.length === 0) return [];
 
     return posts;
+  }
+
+  static async searchPublications({ text, page }) {
+    const limit = 20;
+    const posts = await Post.findAll({
+      where: {
+        title: {
+          [Op.substring]: text,
+        },
+        status: 'published',
+      },
+      order: [['updatedAt', 'DESC']],
+      limit,
+      offset: limit * page,
+      attributes: [
+        'id',
+        'title',
+        'content',
+        'banner',
+        'viewCount',
+        ['updatedAt', 'updatedDate'],
+        ['createdAt', 'createdDate'],
+        'userId',
+      ],
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'email', 'name', 'avatarUrl'],
+        },
+      ],
+    });
+
+    if (posts.length === 0) {
+      return {
+        posts: [],
+        page: 0,
+      };
+    }
+
+    return {
+      posts,
+      page,
+    };
+  }
+
+  static async searchTags({ text, page }) {
+    const limit = 50;
+    const tags = await Tag.findAll({
+      where: {
+        name: {
+          [Op.substring]: text,
+        },
+      },
+      limit,
+      offset: limit * page,
+      attributes: ['id', 'name'],
+    });
+
+    if (tags.length === 0) {
+      return {
+        tags: [],
+        page: 0,
+      };
+    }
+
+    return {
+      tags,
+      page,
+    };
   }
 }

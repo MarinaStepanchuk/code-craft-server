@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import mailService from './mail-service.js';
 import ApiError from '../utils/api-error.js';
 import { errorsObject } from '../utils/constants.js';
+import { Op } from 'sequelize';
 
 export default class UserService {
   static async register(email, password) {
@@ -267,5 +268,31 @@ export default class UserService {
     });
 
     return updateUser;
+  }
+
+  static async searchUsers({ text, page }) {
+    const limit = 20;
+    const users = await User.findAll({
+      where: {
+        name: {
+          [Op.substring]: text,
+        },
+      },
+      limit,
+      offset: limit * page,
+      attributes: ['id', 'email', 'name', 'bio'],
+    });
+
+    if (users.length === 0) {
+      return {
+        users: [],
+        page: 0,
+      };
+    }
+
+    return {
+      users,
+      page,
+    };
   }
 }

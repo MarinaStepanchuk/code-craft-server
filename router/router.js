@@ -8,6 +8,7 @@ import LikeController from '../controllers/like-controller.js';
 import CommentController from '../controllers/comment-controller.js';
 import ChatController from '../controllers/chat-controller.js';
 import SubscribersController from '../controllers/subscribers-controller.js';
+import SearchController from '../controllers/search-controller.js';
 
 const router = Router();
 
@@ -64,5 +65,7 @@ router.post(routes.SUBSCRIBERS, SubscribersController.subscribe);
 router.delete(routes.SUBSCRIBERS, SubscribersController.unsubscribe);
 router.get(routes.SUBSCRIBERS, SubscribersController.getSubscribers);
 router.get(routes.SUBSCRIBE, SubscribersController.checkSubscribe);
+
+router.get(routes.SEARCH, SearchController.search);
 
 export default router;

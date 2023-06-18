@@ -22,6 +22,7 @@ const routes = {
   CHAT: '/chat',
   SUBSCRIBERS: '/subscribers',
   SUBSCRIBE: '/subscribe',
+  SEARCH: '/search',
 };
 
 const errorsObject = {

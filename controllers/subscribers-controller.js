@@ -8,7 +8,7 @@ export default class SubscribersController {
         author,
         subscriber,
       });
-      return res.json(result);
+      res.json(result);
     } catch (error) {
       next(error);
     }
@@ -21,7 +21,7 @@ export default class SubscribersController {
         author,
         subscriber,
       });
-      return res.json(result);
+      res.json(result);
     } catch (error) {
       next(error);
     }
@@ -29,12 +29,12 @@ export default class SubscribersController {
 
   static async getSubscribers(req, res, next) {
     try {
-      const { author, offset } = req.query;
+      const { author, page } = req.query;
       const result = await SubscribersService.getSubscribers({
         author,
-        offset: Number(offset) || 0,
+        page: Number(page) || 0,
       });
-      return res.json(result);
+      res.json(result);
     } catch (error) {
       next(error);
     }
@@ -48,7 +48,7 @@ export default class SubscribersController {
         author,
         subscriber,
       });
-      return res.json(result);
+      res.json(result);
     } catch (error) {
       next(error);
     }

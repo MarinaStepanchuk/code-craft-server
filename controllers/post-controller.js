@@ -114,20 +114,20 @@ export default class PostController {
           userId,
           status = 'published',
           limit = 10,
-          offset = 0,
+          page = 0,
         } = req.query;
         if (status === 'published') {
           const result = await PostService.getUserPublishedPosts({
             userId,
             limit: Number(limit),
-            offset: Number(offset) || 0,
+            page: Number(page) || 0,
           });
           res.json(result);
         } else {
           const result = await PostService.getUserDrafts({
             userId,
             limit: Number(limit),
-            offset: Number(offset),
+            page: Number(page),
           });
           res.json(result);
         }
@@ -135,14 +135,14 @@ export default class PostController {
 
       const {
         limit = 20,
-        offset = 0,
+        page = 0,
         sort = 'DESC',
         status = 'published',
       } = req.query;
 
       const result = await PostService.getPosts({
         limit: Number(limit),
-        offset: Number(offset),
+        page: Number(page),
         sort,
         status,
       });

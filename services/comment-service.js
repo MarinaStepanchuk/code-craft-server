@@ -119,14 +119,14 @@ export default class CommentService {
     }
   }
 
-  static async getResponses({ userId, limit, offset }) {
+  static async getResponses({ userId, limit, page }) {
     const result = await Comment.findAll({
       where: {
         userId,
       },
       order: [['createdAt', 'DESC']],
       limit,
-      offset,
+      offset: page ? limit * page - 1 : page,
       attributes: [
         'id',
         'message',
@@ -151,7 +151,7 @@ export default class CommentService {
 
     return {
       comments: [...result],
-      page: offset,
+      page,
       amountPages: Math.ceil(result.length / limit),
     };
   }
