@@ -11,21 +11,20 @@ export default class SearchController {
             text,
             page,
           });
-          res.json(resultPublications);
+          return res.json(resultPublications);
           break;
         case 'users':
           const resultUsers = await UserService.searchUsers({ text, page });
-          res.json(resultUsers);
+          return res.json(resultUsers);
           break;
         case 'tags':
           const resultTags = await PostService.searchTags({ text, page });
-          res.json(resultTags);
+          return res.json(resultTags);
           break;
         default:
           break;
       }
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }

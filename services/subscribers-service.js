@@ -61,8 +61,6 @@ export default class SubscribersService {
       offset: limit * page,
     });
 
-    console.log(feeds);
-
     const feedsData = await Promise.all(
       feeds.map(
         async (item) =>
@@ -97,8 +95,6 @@ export default class SubscribersService {
         page: 0,
       };
     }
-
-    console.log(feedsData);
 
     const sortData = feedsData
       .flat()

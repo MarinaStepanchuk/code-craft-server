@@ -8,7 +8,7 @@ export default class SubscribersController {
         author,
         subscriber,
       });
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -21,7 +21,7 @@ export default class SubscribersController {
         author,
         subscriber,
       });
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -34,7 +34,7 @@ export default class SubscribersController {
         author,
         page: Number(page) || 0,
       });
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -47,7 +47,7 @@ export default class SubscribersController {
         author,
         subscriber,
       });
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -57,7 +57,7 @@ export default class SubscribersController {
     try {
       const { userId, page } = req.query;
       const result = await SubscribersService.getFeeds({ userId, page });
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }

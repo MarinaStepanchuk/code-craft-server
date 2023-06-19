@@ -10,7 +10,7 @@ export default class CommentController {
         message,
         parentId,
       });
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -21,7 +21,7 @@ export default class CommentController {
       const { message } = req.body;
       const id = req.params.id;
       const result = await CommentService.update({ id, message });
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -30,7 +30,7 @@ export default class CommentController {
   static async deleteComment(req, res, next) {
     try {
       const result = await CommentService.delete(req.params.id);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -40,7 +40,7 @@ export default class CommentController {
     try {
       const { postId } = req.query;
       const result = await CommentService.getAllComments(postId);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -54,7 +54,7 @@ export default class CommentController {
         limit: Number(limit),
         page: Number(page),
       });
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }

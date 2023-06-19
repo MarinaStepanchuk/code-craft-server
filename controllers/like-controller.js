@@ -5,7 +5,7 @@ export default class LikeController {
     try {
       const { userId, postId } = req.query;
       const result = await LikeService.addLike(userId, postId);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -14,7 +14,7 @@ export default class LikeController {
     try {
       const { userId, postId } = req.body;
       const result = await LikeService.removeLike(userId, postId);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -24,7 +24,7 @@ export default class LikeController {
     try {
       const { userId, postId } = req.query;
       const result = await LikeService.checkUserLike({ userId, postId });
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -34,7 +34,7 @@ export default class LikeController {
     try {
       const { postId } = req.query;
       const result = await LikeService.countLikes(postId);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }

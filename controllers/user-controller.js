@@ -17,7 +17,7 @@ export default class UserController {
 
       const result = await UserService.register(email, password);
 
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -27,7 +27,7 @@ export default class UserController {
     try {
       const { email, password } = req.body;
       const result = await UserService.login(email, password);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -46,7 +46,7 @@ export default class UserController {
   static async getMe(req, res, next) {
     try {
       const result = await UserService.getUser(req.userId);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -55,7 +55,7 @@ export default class UserController {
   static async getUser(req, res, next) {
     try {
       const result = await UserService.getUser(req.params.userId);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -66,7 +66,7 @@ export default class UserController {
       const result = await UserService.getUserByEmail(
         decodeURIComponent(req.params.email)
       );
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -87,7 +87,7 @@ export default class UserController {
         instagram,
         avatarUrl,
       });
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -102,7 +102,7 @@ export default class UserController {
         avatarUrl,
         provider
       );
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -112,7 +112,7 @@ export default class UserController {
     try {
       const { bookmarks, userId } = req.body;
       const result = await UserService.updateBookmark({ bookmarks, userId });
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }

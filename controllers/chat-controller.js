@@ -5,7 +5,7 @@ export default class ChatController {
     try {
       const { message } = req.body;
       const result = await ChatService.getMessage(message);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }

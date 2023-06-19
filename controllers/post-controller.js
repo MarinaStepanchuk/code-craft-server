@@ -50,9 +50,9 @@ export default class PostController {
       images.forEach(async (image) => {
         await FirebaseService.removeImage(image);
       });
-      res.json(null);
+      return res.json(null);
     } catch (error) {
-      res.json(null);
+      return res.json(null);
     }
   }
 
@@ -71,7 +71,7 @@ export default class PostController {
         status,
       };
       const result = await PostService.create(doc);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -92,7 +92,7 @@ export default class PostController {
         status,
       };
       const result = await PostService.update(doc);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -101,7 +101,7 @@ export default class PostController {
   static async deletePost(req, res, next) {
     try {
       const result = await PostService.delete(req.params.id);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -122,14 +122,14 @@ export default class PostController {
             limit: Number(limit),
             page: Number(page) || 0,
           });
-          res.json(result);
+          return res.json(result);
         } else {
           const result = await PostService.getUserDrafts({
             userId,
             limit: Number(limit),
             page: Number(page),
           });
-          res.json(result);
+          return res.json(result);
         }
       }
 
@@ -146,7 +146,7 @@ export default class PostController {
         sort,
         status,
       });
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -155,7 +155,7 @@ export default class PostController {
   static async getPostById(req, res, next) {
     try {
       const result = await PostService.getPost(req.params.id);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -164,7 +164,7 @@ export default class PostController {
   static async getDraft(req, res, next) {
     try {
       const result = await PostService.getDraft(req.params.id);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -173,7 +173,7 @@ export default class PostController {
   static async visitPost(req, res, next) {
     try {
       const result = await PostService.visitPost(req.params.id);
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
@@ -183,9 +183,8 @@ export default class PostController {
     try {
       const { userId, page } = req.query;
       const result = await PostService.getBookmarks({ userId, page });
-      res.json(result);
+      return res.json(result);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
@@ -198,7 +197,7 @@ export default class PostController {
         name,
         page: Number(page) || 0,
       });
-      res.json(result);
+      return res.json(result);
     } catch (error) {
       next(error);
     }
