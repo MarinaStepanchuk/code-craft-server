@@ -389,10 +389,7 @@ export default class PostService {
 
     if (!data) throw ApiError.NotFound(errorsObject.notFound);
 
-    const isLiked = await LikeService.checkUserLike(id);
-    const countLikes = await data.countLikes();
-
-    return { ...data.dataValues, isLiked, countLikes };
+    return { ...data.dataValues };
   }
 
   static async visitPost(id) {

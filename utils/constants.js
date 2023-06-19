@@ -16,6 +16,7 @@ const routes = {
   SAVE_IMAGE: '/save-image',
   REMOVE_IMAGES: '/remove-images',
   LIKE: '/like',
+  COUNT_LIKES: '/likes',
   BOOKMARKS: '/bookmarks',
   COMMENTS: '/comments',
   COMMENT: '/comment',

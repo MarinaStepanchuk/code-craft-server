@@ -19,4 +19,24 @@ export default class LikeController {
       next(error);
     }
   }
+
+  static async isLiked(req, res, next) {
+    try {
+      const { userId, postId } = req.query;
+      const result = await LikeService.checkUserLike({ userId, postId });
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async countLikes(req, res, next) {
+    try {
+      const { postId } = req.query;
+      const result = await LikeService.countLikes(postId);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

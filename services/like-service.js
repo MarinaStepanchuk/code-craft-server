@@ -13,9 +13,15 @@ export default class LikeService {
     return {};
   }
 
-  static async checkUserLike(postId) {
-    const isLiked = await Like.findOne({ where: { postId } });
+  static async checkUserLike({ postId, userId }) {
+    const isLiked = await Like.findOne({ where: { postId, userId } });
 
     return !!isLiked;
+  }
+
+  static async countLikes(postId) {
+    const countLikes = await Like.count({ where: { postId } });
+
+    return countLikes;
   }
 }

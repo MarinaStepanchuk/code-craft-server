@@ -147,7 +147,12 @@ export default class CommentService {
       ],
     });
 
-    if (result.length === 0) return [];
+    if (result.length === 0)
+      return {
+        comments: [],
+        page: 0,
+        amountPages: 0,
+      };
 
     return {
       comments: [...result],
