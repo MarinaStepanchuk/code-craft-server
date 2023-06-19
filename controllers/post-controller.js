@@ -181,10 +181,11 @@ export default class PostController {
 
   static async getBookmarks(req, res, next) {
     try {
-      const { userId } = req.query;
-      const result = await PostService.getBookmarks(userId);
+      const { userId, page } = req.query;
+      const result = await PostService.getBookmarks({ userId, page });
       res.json(result);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }

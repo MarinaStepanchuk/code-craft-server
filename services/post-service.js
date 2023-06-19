@@ -401,54 +401,59 @@ export default class PostService {
     return {};
   }
 
-  static async getBookmarks(userId) {
-    const bookmarks = await User.findByPk(userId, {
+  static async getBookmarks({ userId, page }) {
+    const user = await User.findByPk(userId, {
       attributes: ['bookmarks'],
     });
 
-    if (!bookmarks) {
-      return [];
+    if (!user.bookmarks) {
+      return {
+        posts: [],
+        page: 0,
+      };
     }
 
     const posts = await Promise.all(
-      bookmarks.join(' ').map(
-        async (postId) =>
-          await Post.findOne({
-            where: {
-              id: postId,
-            },
-            attributes: [
-              'id',
-              'title',
-              'content',
-              'banner',
-              'viewCount',
-              ['updatedAt', 'updatedDate'],
-              ['createdAt', 'createdDate'],
-              'userId',
-            ],
-            include: [
-              {
-                model: Tag,
-                attributes: ['id', 'name'],
-                through: {
-                  attributes: [],
+      user.bookmarks
+        .trim()
+        .split(' ')
+        .map(
+          async (postId) =>
+            await Post.findOne({
+              where: {
+                id: postId,
+              },
+              attributes: [
+                'id',
+                'title',
+                'content',
+                'banner',
+                'viewCount',
+                ['updatedAt', 'updatedDate'],
+                ['createdAt', 'createdDate'],
+                'userId',
+              ],
+              include: [
+                {
+                  model: User,
+                  attributes: ['id', 'email', 'name', 'avatarUrl'],
                 },
-              },
-            ],
-            include: [
-              {
-                model: User,
-                attributes: ['id', 'email', 'name', 'avatarUrl'],
-              },
-            ],
-          })
-      )
+              ],
+            })
+        )
     );
 
-    if (!posts.length) return [];
+    if (!posts.length) {
+      return {
+        posts: [],
+        page: 0,
+      };
+    }
 
-    return posts;
+    return {
+      posts,
+      page,
+    };
   }
 
   static async searchPublications({ text, page }) {
