@@ -8,7 +8,6 @@ import * as dotenv from 'dotenv';
 import { initializeApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
 import firebaseConfig from './firebase.config.js';
-import { Configuration, OpenAIApi } from 'openai';
 
 dotenv.config();
 
