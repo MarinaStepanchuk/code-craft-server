@@ -1,7 +1,7 @@
 import User from '../db/models/user.js';
 import Post from '../db/models/post.js';
 import Subscribers from '../db/models/subscribers.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import mailService from './mail-service.js';
 import ApiError from '../utils/api-error.js';
