@@ -6,6 +6,7 @@ const routes = {
   USER: '/user/:userId',
   USER_UPDATE: '/user',
   POSTS: '/posts',
+  POSTS_TAG: '/posts/tag/:name',
   POST: '/post',
   VISIT: '/post/visit/:id',
   POST_BY_ID: '/post/:id',

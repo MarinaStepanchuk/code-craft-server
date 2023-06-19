@@ -188,4 +188,18 @@ export default class PostController {
       next(error);
     }
   }
+
+  static async getPostsByTag(req, res, next) {
+    try {
+      const { page } = req.query;
+      const name = req.params.name;
+      const result = await PostService.getPostsByTag({
+        name,
+        page: Number(page) || 0,
+      });
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

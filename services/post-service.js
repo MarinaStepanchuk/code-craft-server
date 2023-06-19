@@ -254,7 +254,7 @@ export default class PostService {
         ],
       });
 
-      if (rows.length === 0)
+      if (!rows.length)
         return {
           posts: [],
           page: 0,
@@ -312,13 +312,14 @@ export default class PostService {
         ],
       });
 
-      if (rows.length === 0)
+      if (!rows.length) {
         return {
           posts: [],
           page: 0,
           amountPages: 0,
           amountPosts: 0,
         };
+      }
 
       return {
         posts: [...rows],
@@ -445,7 +446,7 @@ export default class PostService {
       )
     );
 
-    if (posts.length === 0) return [];
+    if (!posts.length) return [];
 
     return posts;
   }
@@ -480,7 +481,7 @@ export default class PostService {
       ],
     });
 
-    if (posts.length === 0) {
+    if (!posts.length) {
       return {
         posts: [],
         page: 0,
@@ -506,7 +507,7 @@ export default class PostService {
       attributes: ['id', 'name'],
     });
 
-    if (tags.length === 0) {
+    if (!tags.length) {
       return {
         tags: [],
         page: 0,
@@ -515,6 +516,48 @@ export default class PostService {
 
     return {
       tags,
+      page,
+    };
+  }
+
+  static async getPostsByTag({ name, page }) {
+    const limit = 20;
+
+    const tag = await Tag.findOne({ where: { name } });
+
+    const posts = await tag.getPosts({
+      limit,
+      offset: limit * page,
+      attributes: [
+        'id',
+        'title',
+        'content',
+        'banner',
+        'viewCount',
+        ['updatedAt', 'updatedDate'],
+        ['createdAt', 'createdDate'],
+        'userId',
+      ],
+      through: {
+        attributes: [],
+      },
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'email', 'name', 'avatarUrl'],
+        },
+      ],
+    });
+
+    if (!posts.length) {
+      return {
+        posts: [],
+        page: 0,
+      };
+    }
+
+    return {
+      posts,
       page,
     };
   }

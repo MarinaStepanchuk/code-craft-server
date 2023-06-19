@@ -68,4 +68,6 @@ router.get(routes.SUBSCRIBE, SubscribersController.checkSubscribe);
 
 router.get(routes.SEARCH, SearchController.search);
 
+router.get(routes.POSTS_TAG, PostController.getPostsByTag);
+
 export default router;
