@@ -1,5 +1,6 @@
 import Subscribers from '../db/models/subscribers.js';
 import User from '../db/models/user.js';
+import Post from '../db/models/post.js';
 
 export default class SubscribersService {
   static async addSubscribe({ author, subscriber }) {
@@ -49,6 +50,69 @@ export default class SubscribersService {
       page,
       amountPages: Math.ceil(count / limit) - 1,
       amountSubscribers: count,
+    };
+  }
+
+  static async getFeeds({ userId, page }) {
+    const limit = 20;
+    const feeds = await Subscribers.findAll({
+      where: { subscriber: userId },
+      limit,
+      offset: limit * page,
+    });
+
+    console.log(feeds);
+
+    const feedsData = await Promise.all(
+      feeds.map(
+        async (item) =>
+          await Post.findAll({
+            where: {
+              userId: item.author,
+              status: 'published',
+            },
+            attributes: [
+              'id',
+              'title',
+              'content',
+              'banner',
+              'viewCount',
+              ['updatedAt', 'updatedDate'],
+              ['createdAt', 'createdDate'],
+              'userId',
+            ],
+            include: [
+              {
+                model: User,
+                attributes: ['id', 'email', 'name', 'avatarUrl'],
+              },
+            ],
+          })
+      )
+    );
+
+    if (!feedsData.length) {
+      return {
+        posts: [],
+        page: 0,
+      };
+    }
+
+    console.log(feedsData);
+
+    const sortData = feedsData
+      .flat()
+      .sort(
+        (dateA, dateB) =>
+          new Date(dateA.updatedDate).getTime() -
+          new Date(dateB.updatedDate).getTime()
+      );
+
+    const result = sortData.slice(page * limit, page * limit + limit);
+
+    return {
+      posts: [...result],
+      page,
     };
   }
 

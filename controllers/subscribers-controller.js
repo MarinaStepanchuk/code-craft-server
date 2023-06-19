@@ -43,11 +43,20 @@ export default class SubscribersController {
   static async checkSubscribe(req, res, next) {
     try {
       const { author, subscriber } = req.query;
-      console.log(11111111111, author, subscriber);
       const result = await SubscribersService.isSubscribed({
         author,
         subscriber,
       });
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getFeeds(req, res, next) {
+    try {
+      const { userId, page } = req.query;
+      const result = await SubscribersService.getFeeds({ userId, page });
       res.json(result);
     } catch (error) {
       next(error);

@@ -65,6 +65,7 @@ router.post(routes.SUBSCRIBERS, SubscribersController.subscribe);
 router.delete(routes.SUBSCRIBERS, SubscribersController.unsubscribe);
 router.get(routes.SUBSCRIBERS, SubscribersController.getSubscribers);
 router.get(routes.SUBSCRIBE, SubscribersController.checkSubscribe);
+router.get(routes.FEEDS, SubscribersController.getFeeds);
 
 router.get(routes.SEARCH, SearchController.search);
 

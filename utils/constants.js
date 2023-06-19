@@ -22,6 +22,7 @@ const routes = {
   RESPONSES: '/responses',
   CHAT: '/chat',
   SUBSCRIBERS: '/subscribers',
+  FEEDS: '/subscribers/feeds',
   SUBSCRIBE: '/subscribe',
   SEARCH: '/search',
 };
