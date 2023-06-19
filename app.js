@@ -11,16 +11,12 @@ import firebaseConfig from './firebase.config.js';
 
 dotenv.config();
 
-export const app = express();
+const app = express();
 const port = 3001;
 
 initializeApp(firebaseConfig);
 export const storage = getStorage();
 
-app.use(express.static('public'));
-app.get('/', (req, res) => {
-  res.sendFile('index.html', { root: path.join(__dirname, 'public') });
-});
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -31,10 +27,6 @@ app.use(
 );
 app.use('/api', router);
 app.use(errorMiddleware);
-
-app.get('/ping', (req, res) => {
-  res.send('pong 🏓');
-});
 
 // {
 //   alter: true;
