@@ -28,6 +28,10 @@ app.use(
 app.use('/api', router);
 app.use(errorMiddleware);
 
+app.get('/ping', (req, res) => {
+  res.send('pong 🏓');
+});
+
 // {
 //   alter: true;
 // }
