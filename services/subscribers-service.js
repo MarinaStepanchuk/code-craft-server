@@ -57,8 +57,6 @@ export default class SubscribersService {
     const limit = 20;
     const feeds = await Subscribers.findAll({
       where: { subscriber: userId },
-      limit,
-      offset: limit * page,
     });
 
     const feedsData = await Promise.all(
@@ -93,6 +91,8 @@ export default class SubscribersService {
       return {
         posts: [],
         page: 0,
+        amountPages: 0,
+        amountPosts: 0,
       };
     }
 
@@ -100,8 +100,8 @@ export default class SubscribersService {
       .flat()
       .sort(
         (dateA, dateB) =>
-          new Date(dateA.updatedDate).getTime() -
-          new Date(dateB.updatedDate).getTime()
+          new Date(dateB.dataValues.updatedDate).getTime() -
+          new Date(dateA.dataValues.updatedDate).getTime()
       );
 
     const result = sortData.slice(page * limit, page * limit + limit);
@@ -109,6 +109,8 @@ export default class SubscribersService {
     return {
       posts: [...result],
       page,
+      amountPages: Math.ceil(sortData.length / limit) - 1,
+      amountPosts: sortData.length,
     };
   }
 

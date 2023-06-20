@@ -185,6 +185,10 @@ export default class PostService {
               attributes: [],
             },
           },
+          {
+            model: User,
+            attributes: ['id', 'email', 'name', 'avatarUrl'],
+          },
         ],
       });
 
@@ -399,6 +403,7 @@ export default class PostService {
   }
 
   static async getBookmarks({ userId, page }) {
+    const limit = 20;
     const user = await User.findByPk(userId, {
       attributes: ['bookmarks'],
     });
@@ -414,6 +419,7 @@ export default class PostService {
       user.bookmarks
         .trim()
         .split(' ')
+        .reverse()
         .map(
           async (postId) =>
             await Post.findOne({
@@ -444,17 +450,29 @@ export default class PostService {
       return {
         posts: [],
         page: 0,
+        amountPages: 0,
+        amountPosts: 0,
       };
     }
 
+    const result = posts.slice(page * limit, page * limit + limit);
+
     return {
-      posts,
+      posts: result,
       page,
+      amountPages: Math.ceil(posts.length / limit) - 1,
+      amountPosts: posts.length,
     };
   }
 
   static async searchPublications({ text, page }) {
     const limit = 20;
+    const count = await Post.count({
+      title: {
+        [Op.substring]: text,
+      },
+      status: 'published',
+    });
     const posts = await Post.findAll({
       where: {
         title: {
@@ -487,17 +505,26 @@ export default class PostService {
       return {
         posts: [],
         page: 0,
+        amountPages: 0,
+        amountPosts: 0,
       };
     }
 
     return {
       posts,
       page,
+      amountPages: Math.ceil(count / limit) - 1,
+      amountPosts: count,
     };
   }
 
   static async searchTags({ text, page }) {
     const limit = 50;
+    const count = await Tag.count({
+      name: {
+        [Op.substring]: text,
+      },
+    });
     const tags = await Tag.findAll({
       where: {
         name: {
@@ -513,12 +540,16 @@ export default class PostService {
       return {
         tags: [],
         page: 0,
+        amountPages: 0,
+        amountTags: 0,
       };
     }
 
     return {
       tags,
       page,
+      amountPages: Math.ceil(count / limit) - 1,
+      amountTags: count,
     };
   }
 
@@ -526,6 +557,8 @@ export default class PostService {
     const limit = 20;
 
     const tag = await Tag.findOne({ where: { name } });
+
+    const count = await tag.countPosts();
 
     const posts = await tag.getPosts({
       limit,
@@ -555,12 +588,16 @@ export default class PostService {
       return {
         posts: [],
         page: 0,
+        amountPages: 0,
+        amountPosts: 0,
       };
     }
 
     return {
       posts,
       page,
+      amountPages: Math.ceil(count / limit) - 1,
+      amountPosts: count,
     };
   }
 }

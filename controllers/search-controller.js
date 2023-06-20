@@ -9,16 +9,22 @@ export default class SearchController {
         case 'publications':
           const resultPublications = await PostService.searchPublications({
             text,
-            page,
+            page: Number(page),
           });
           return res.json(resultPublications);
           break;
         case 'users':
-          const resultUsers = await UserService.searchUsers({ text, page });
+          const resultUsers = await UserService.searchUsers({
+            text,
+            page: Number(page),
+          });
           return res.json(resultUsers);
           break;
         case 'tags':
-          const resultTags = await PostService.searchTags({ text, page });
+          const resultTags = await PostService.searchTags({
+            text,
+            page: Number(page),
+          });
           return res.json(resultTags);
           break;
         default:
