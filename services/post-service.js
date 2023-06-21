@@ -656,10 +656,29 @@ export default class PostService {
     return getRandomList(tags, count);
   }
 
-  static async getRecomendedList() {
+  static async getRecomendedList(count) {
     const posts = await Post.findAll({
+      where: { status: 'published' },
       limit: 100,
       order: [['viewCount', 'DESC']],
+      attributes: [
+        'id',
+        'title',
+        'content',
+        'banner',
+        'viewCount',
+        ['updatedAt', 'updatedDate'],
+        ['createdAt', 'createdDate'],
+        'userId',
+      ],
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'email', 'name', 'avatarUrl'],
+        },
+      ],
     });
+
+    return getRandomList(posts, count);
   }
 }

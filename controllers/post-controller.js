@@ -217,4 +217,14 @@ export default class PostController {
       next(error);
     }
   }
+
+  static async getRecomendedPosts(req, res, next) {
+    try {
+      const { count } = req.query;
+      const result = await PostService.getRecomendedList(count);
+      return res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

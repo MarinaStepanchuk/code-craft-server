@@ -73,5 +73,6 @@ router.get(routes.SEARCH, SearchController.search);
 
 router.get(routes.POSTS_TAG, PostController.getPostsByTag);
 router.get(routes.TOPIC, PostController.getRecomendedTopic);
+router.get(routes.RECOMENDATIONS, PostController.getRecomendedPosts);
 
 export default router;
