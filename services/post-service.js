@@ -626,15 +626,19 @@ export default class PostService {
       post.tags.forEach((tag) => tags.add(tag));
     });
 
-    const result = getRandomList(Array.from(tags), count);
-
-    if (result.length < count) {
-      const additionalTags = await PostService.getTopTopics(
-        count - result.length
-      );
-      return [...result, ...additionalTags];
+    if (tags.length < count) {
+      const additionalTags = await PostService.getTopTopics(count);
+      const newTagList = new Set();
+      return [...tags, ...additionalTags].forEach((item) => {
+        newTagList.add(item);
+      });
     }
 
+    if (tags.length === count) {
+      return tags;
+    }
+
+    const result = getRandomList(Array.from(tags), count);
     return result;
   }
 
