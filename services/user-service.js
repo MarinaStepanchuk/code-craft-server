@@ -72,9 +72,9 @@ export default class UserService {
       throw ApiError.BadRequest(errorsObject.unregisteredUser);
     }
 
-    // if (!user.isActivated) {
-    //   throw ApiError.BadRequest(errorsObject.confirmEmail);
-    // }
+    if (!user.isActivated) {
+      throw ApiError.BadRequest(errorsObject.confirmEmail);
+    }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
 
@@ -212,10 +212,8 @@ export default class UserService {
       };
 
       const user = await User.create(doc);
-      console.log(user);
       return user;
     }
-    console.log(candidate);
 
     return candidate;
   }

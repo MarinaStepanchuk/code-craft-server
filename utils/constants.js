@@ -28,6 +28,7 @@ const routes = {
   SUBSCRIBE: '/subscribe',
   SEARCH: '/search',
   TOPIC: '/tags/topic',
+  NOTIFICATION: '/notification',
 };
 
 const errorsObject = {

@@ -279,7 +279,6 @@ export default class PostService {
   }
 
   static async getPosts({ limit, page, sort }) {
-    console.log(limit, page, sort);
     try {
       const count = await Post.count({
         where: {
@@ -317,8 +316,6 @@ export default class PostService {
           },
         ],
       });
-
-      console.log(rows);
 
       if (!rows.length) {
         return {

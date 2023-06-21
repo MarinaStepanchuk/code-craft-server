@@ -9,6 +9,7 @@ import CommentController from '../controllers/comment-controller.js';
 import ChatController from '../controllers/chat-controller.js';
 import SubscribersController from '../controllers/subscribers-controller.js';
 import SearchController from '../controllers/search-controller.js';
+import NotificationController from '../controllers/notification-controller.js';
 
 const router = Router();
 
@@ -74,5 +75,9 @@ router.get(routes.SEARCH, SearchController.search);
 router.get(routes.POSTS_TAG, PostController.getPostsByTag);
 router.get(routes.TOPIC, PostController.getRecomendedTopic);
 router.get(routes.RECOMENDATIONS, PostController.getRecomendedPosts);
+
+router.get(routes.NOTIFICATION, NotificationController.getAllNottifications);
+router.post(routes.NOTIFICATION, NotificationController.createNotification);
+router.delete(routes.NOTIFICATION, NotificationController.removeNotification);
 
 export default router;

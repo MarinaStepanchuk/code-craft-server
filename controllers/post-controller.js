@@ -109,7 +109,6 @@ export default class PostController {
 
   static async getPosts(req, res, next) {
     try {
-      console.log(req.query.userId);
       if (req.query.userId) {
         const {
           userId,
