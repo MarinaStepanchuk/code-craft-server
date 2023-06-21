@@ -26,6 +26,7 @@ const routes = {
   FEEDS: '/subscribers/feeds',
   SUBSCRIBE: '/subscribe',
   SEARCH: '/search',
+  TOPIC: '/tags/topic',
 };
 
 const errorsObject = {

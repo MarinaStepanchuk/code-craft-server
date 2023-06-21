@@ -202,4 +202,16 @@ export default class PostController {
       next(error);
     }
   }
+
+  static async getRecomendedTopic(req, res, next) {
+    try {
+      const { count, userId } = req.query;
+      const result = userId
+        ? await PostService.getRecomendedTopics({ count, userId })
+        : await PostService.getTopTopics(count);
+      return res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

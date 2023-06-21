@@ -72,5 +72,6 @@ router.get(routes.FEEDS, SubscribersController.getFeeds);
 router.get(routes.SEARCH, SearchController.search);
 
 router.get(routes.POSTS_TAG, PostController.getPostsByTag);
+router.get(routes.TOPIC, PostController.getRecomendedTopic);
 
 export default router;

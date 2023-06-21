@@ -3,8 +3,9 @@ import ApiError from '../utils/api-error.js';
 import { errorsObject } from '../utils/constants.js';
 import User from '../db/models/user.js';
 import Tag from '../db/models/tag.js';
-import LikeService from './like-service.js';
 import { Op } from 'sequelize';
+import getRandomList from '../utils/getRandomList.js';
+import sequelize from '../db/db.js';
 
 export default class PostService {
   static async create({ title, content, banner, tags, status, creatorId }) {
@@ -599,5 +600,56 @@ export default class PostService {
       amountPages: Math.ceil(count / limit) - 1,
       amountPosts: count,
     };
+  }
+
+  static async getRecomendedTopics({ userId, count }) {
+    const posts = await Post.findAll({
+      where: { userId: userId, status: 'published' },
+      include: [
+        {
+          model: Tag,
+          attributes: ['id', 'name', 'count'],
+          through: {
+            attributes: [],
+          },
+        },
+      ],
+    });
+
+    if (!posts.length) {
+      return await PostService.getTopTopics(count);
+    }
+
+    const tags = new Set();
+
+    posts.forEach((post) => {
+      post.tags.forEach((tag) => tags.add(tag));
+    });
+
+    const result = getRandomList(Array.from(tags), count);
+
+    if (result.length < count) {
+      const additionalTags = await PostService.getTopTopics(
+        count - result.length
+      );
+      return [...result, ...additionalTags];
+    }
+
+    return result;
+  }
+
+  static async getTopTopics(count) {
+    const tags = await Tag.findAll({
+      limit: count * 2,
+      order: [['count', 'DESC']],
+      attributes: ['id', 'name', 'count'],
+    });
+
+    if (!tags.length) {
+      return [];
+    }
+
+    const result = getRandomList(tags, count);
+    return result;
   }
 }
