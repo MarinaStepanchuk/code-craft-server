@@ -109,6 +109,7 @@ export default class PostController {
 
   static async getPosts(req, res, next) {
     try {
+      console.log(req.query.userId);
       if (req.query.userId) {
         const {
           userId,
@@ -206,9 +207,11 @@ export default class PostController {
   static async getRecomendedTopic(req, res, next) {
     try {
       const { count, userId } = req.query;
-      const result = userId
-        ? await PostService.getRecomendedTopics({ count, userId })
-        : await PostService.getTopTopics(count);
+      if (userId) {
+        const result = await PostService.getRecomendedTopics({ count, userId });
+        return res.json(result);
+      }
+      const result = await PostService.getTopTopics(count);
       return res.json(result);
     } catch (error) {
       next(error);

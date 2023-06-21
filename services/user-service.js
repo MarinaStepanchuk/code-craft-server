@@ -203,9 +203,8 @@ export default class UserService {
   static async registerWithProvider(id, email, avatarUrl, provider) {
     const candidate = await User.findOne({ where: { email } });
     if (!candidate) {
-      const idUser = provider === 'google' ? `google${id}` : `github${id}`;
       const doc = {
-        id: idUser,
+        id,
         email,
         avatarUrl,
         password: provider,
@@ -213,29 +212,12 @@ export default class UserService {
       };
 
       const user = await User.create(doc);
-
-      return {
-        id: user.id,
-        email: user.email,
-        name: user.name | null,
-        avatarUrl: user.avatarUrl | null,
-        bio: user.bio | null,
-        twitter: user.twitter | null,
-        mail: user.mail | null,
-        instagram: user.instagram | null,
-      };
+      console.log(user);
+      return user;
     }
+    console.log(candidate);
 
-    return {
-      id: candidate.id,
-      email: candidate.email,
-      name: candidate.name | null,
-      avatarUrl: candidate.avatarUrl | null,
-      bio: candidate.bio | null,
-      twitter: candidate.twitter | null,
-      mail: candidate.mail | null,
-      instagram: candidate.instagram | null,
-    };
+    return candidate;
   }
 
   static async updateBookmark({ bookmarks, userId }) {

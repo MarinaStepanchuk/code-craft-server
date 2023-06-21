@@ -5,7 +5,7 @@ import User from '../db/models/user.js';
 import Tag from '../db/models/tag.js';
 import { Op } from 'sequelize';
 import getRandomList from '../utils/getRandomList.js';
-import sequelize from '../db/db.js';
+import getUniqueListById from '../utils/getUniqueDataById.js';
 
 export default class PostService {
   static async create({ title, content, banner, tags, status, creatorId }) {
@@ -279,6 +279,7 @@ export default class PostService {
   }
 
   static async getPosts({ limit, page, sort }) {
+    console.log(limit, page, sort);
     try {
       const count = await Post.count({
         where: {
@@ -316,6 +317,8 @@ export default class PostService {
           },
         ],
       });
+
+      console.log(rows);
 
       if (!rows.length) {
         return {
@@ -620,31 +623,28 @@ export default class PostService {
       return await PostService.getTopTopics(count);
     }
 
-    const tags = new Set();
-
+    const tags = [];
     posts.forEach((post) => {
-      post.tags.forEach((tag) => tags.add(tag));
+      post.tags.forEach((tag) => tags.push(tag));
     });
 
-    if (tags.length < count) {
+    const uniqueTags = getUniqueListById(tags);
+
+    if (tags.size < count) {
       const additionalTags = await PostService.getTopTopics(count);
-      const newTagList = new Set();
-      return [...tags, ...additionalTags].forEach((item) => {
-        newTagList.add(item);
-      });
+      return getUniqueListById([...uniqueTags, ...additionalTags]);
     }
 
-    if (tags.length === count) {
-      return tags;
+    if (uniqueTags.tagsArray.length === count) {
+      return uniqueTags;
     }
 
-    const result = getRandomList(Array.from(tags), count);
-    return result;
+    return getRandomList(uniqueTags.tagsArray, count);
   }
 
   static async getTopTopics(count) {
     const tags = await Tag.findAll({
-      limit: count * 2,
+      limit: count * 3,
       order: [['count', 'DESC']],
       attributes: ['id', 'name', 'count'],
     });
@@ -653,7 +653,13 @@ export default class PostService {
       return [];
     }
 
-    const result = getRandomList(tags, count);
-    return result;
+    return getRandomList(tags, count);
+  }
+
+  static async getRecomendedList() {
+    const posts = await Post.findAll({
+      limit: 100,
+      order: [['viewCount', 'DESC']],
+    });
   }
 }
