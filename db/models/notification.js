@@ -11,7 +11,7 @@ const Notification = sequelize.define('notification', {
     unique: true,
   },
   message: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT('long'),
   },
 });
 

@@ -28,10 +28,6 @@ app.use(
 app.use('/api', router);
 app.use(errorMiddleware);
 
-// {
-//   alter: true;
-// }
-
 const start = async () => {
   try {
     await sequelize.sync();
