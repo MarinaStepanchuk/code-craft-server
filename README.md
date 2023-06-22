@@ -12,7 +12,7 @@
 ### 🛠️ Run project
 
 - "npm install": for install required packages
-- "npm run dev": for start project in developer mode
+- "npm run start": for start project in developer mode
 
 ### ⚙️ Main Tech Stack
 
