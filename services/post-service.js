@@ -632,11 +632,11 @@ export default class PostService {
       return getUniqueListById([...uniqueTags, ...additionalTags]);
     }
 
-    if (uniqueTags.tagsArray.length === count) {
+    if (uniqueTags.length === count) {
       return uniqueTags;
     }
 
-    return getRandomList(uniqueTags.tagsArray, count);
+    return getRandomList(uniqueTags, count);
   }
 
   static async getTopTopics(count) {

@@ -213,6 +213,7 @@ export default class PostController {
       const result = await PostService.getTopTopics(count);
       return res.json(result);
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }

@@ -5,14 +5,14 @@ const getUniqueListById = (list) => {
         return acc;
       }
       acc.map[item.id] = true;
-      acc.tagsArray.push(item);
+      acc.arrayList.push(item);
       return acc;
     },
     {
       map: {},
-      tagsArray: [],
+      arrayList: [],
     }
-  );
+  ).arrayList;
 };
 
 export default getUniqueListById;
