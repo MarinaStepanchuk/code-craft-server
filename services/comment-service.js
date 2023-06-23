@@ -157,7 +157,7 @@ export default class CommentService {
     return {
       comments: [...result],
       page,
-      amountPages: Math.ceil(result.length / limit),
+      amountPages: Math.ceil(result.length / limit) - 1,
     };
   }
 }
