@@ -41,7 +41,7 @@ export default class NotificationService {
         notification: [],
         page: 0,
         amountPages: 0,
-        amountNotification: 0,
+        amountNotifications: 0,
       };
     }
 
@@ -49,7 +49,7 @@ export default class NotificationService {
       notifications,
       page,
       amountPages: Math.ceil(count / limit) - 1,
-      amountPosts: count,
+      amountNotifications: count,
     };
   }
 }
